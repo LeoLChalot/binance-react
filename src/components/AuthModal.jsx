@@ -106,7 +106,7 @@ export default function AuthModal({ isOpen, onClose }) {
                         onClick={() => setIsLogin(!isLogin)}
                         className="text-green-500 hover:text-green-400 transition-colors"
                     >
-                        {isLogin ? "Déja un compte ?" : 'Pas encore de compte ?'}
+                        {isLogin ? "Pas encore de compte ?" : "Déja un compte ?"}
                     </button>
                 </div>
             </div>
