@@ -35,7 +35,6 @@ export function AuthProvider({ children }) {
         const users = getUsers();
         const user = users.find(u => u.email === userData.email && u.password === userData.password);
         if (user) {
-            // S'assurer que toutes les propriétés par défaut sont présentes
             const defaultUser = {
                 id: user.id,
                 email: user.email,
@@ -46,13 +45,11 @@ export function AuthProvider({ children }) {
                 createdAt: user.createdAt || new Date().toISOString()
             };
 
-            // Fusionner avec les données existantes pour ne pas perdre d'informations
             const updatedUser = { ...defaultUser, ...user };
             
             setUser(updatedUser);
             localStorage.setItem('user', JSON.stringify(updatedUser));
 
-            // Mettre à jour la liste des utilisateurs avec les données les plus récentes
             const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
             saveUsers(updatedUsers);
 
@@ -97,10 +94,7 @@ export function AuthProvider({ children }) {
 
     const updateUser = (newUserData) => {
         const updatedUser = { ...user, ...newUserData };
-        // Mettre à jour l'utilisateur dans le localStorage
         localStorage.setItem('user', JSON.stringify(updatedUser));
-        
-        // Mettre à jour l'utilisateur dans la liste des utilisateurs
         const users = getUsers();
         const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
         saveUsers(updatedUsers);
