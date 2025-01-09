@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
     const { logout } = useAuth();
@@ -32,11 +33,11 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                     <div className="flex justify-between h-16 items-center">
                         <div className="flex gap-x-8">
                             <p className="text-white text-xl font-bold">CrypTOP</p>
-                            <button className={navButtonStyle}>Accueil</button>
-                            <button className={navButtonStyle}>Marché</button>
-                            <button className={navButtonStyle}>Portefeuille</button>
-                            <button className={navButtonStyle}>Profil</button>
-                            <button className={navButtonStyle}>Paramètres</button>
+                            <Link to="/dashboard" className={navButtonStyle}>Accueil</Link>
+                            <Link to="/market" className={navButtonStyle}>Marché</Link>
+                            <Link to="/wallet" className={navButtonStyle}>Portefeuille</Link>
+                            <Link to="/profile" className={navButtonStyle}>Profil</Link>
+                            <Link to="/settings" className={navButtonStyle}>Paramètres</Link>
                         </div>
     
                         <button
