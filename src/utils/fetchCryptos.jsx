@@ -28,8 +28,4 @@ export default function fetchCryptos() {
             console.table(itemCrypto)
         }
     }
-    
-    useEffect(() => {
-        fetchCryptos()
-    }, [])
 }
