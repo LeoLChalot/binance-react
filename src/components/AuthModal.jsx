@@ -6,7 +6,10 @@ export default function AuthModal({ isOpen, onClose }) {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        balance: 0,
+        history: [],
+        profilePic: ''
     });
     const { login, register } = useAuth();
 
@@ -27,7 +30,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
         const success = isLogin 
             ? await login({ email: formData.email, password: formData.password })
-            : await register({ email: formData.email, password: formData.password, balance: 0, history: [] });
+            : await register({ email: formData.email, password: formData.password, balance: 0, history: [], profilePic: '' });
         
         if (success) {
             onClose();

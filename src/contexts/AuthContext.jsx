@@ -35,8 +35,27 @@ export function AuthProvider({ children }) {
         const users = getUsers();
         const user = users.find(u => u.email === userData.email && u.password === userData.password);
         if (user) {
-            setUser(user);
-            localStorage.setItem('user', JSON.stringify(user));
+            // S'assurer que toutes les propriétés par défaut sont présentes
+            const defaultUser = {
+                id: user.id,
+                email: user.email,
+                password: user.password,
+                balance: user.balance || 0,
+                history: user.history || [],
+                profilePic: user.profilePic || null,
+                createdAt: user.createdAt || new Date().toISOString()
+            };
+
+            // Fusionner avec les données existantes pour ne pas perdre d'informations
+            const updatedUser = { ...defaultUser, ...user };
+            
+            setUser(updatedUser);
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+
+            // Mettre à jour la liste des utilisateurs avec les données les plus récentes
+            const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+            saveUsers(updatedUsers);
+
             setShowAuth(false);
             return true;
         }
@@ -53,7 +72,12 @@ export function AuthProvider({ children }) {
         
         const newUser = {
             id: uuidv4(),
-            ...userData
+            email: userData.email,
+            password: userData.password,
+            balance: 0,
+            history: [],
+            profilePic: null,
+            createdAt: new Date().toISOString()
         };
 
         users.push(newUser);
@@ -71,6 +95,19 @@ export function AuthProvider({ children }) {
         navigate('/');
     };
 
+    const updateUser = (newUserData) => {
+        const updatedUser = { ...user, ...newUserData };
+        // Mettre à jour l'utilisateur dans le localStorage
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        
+        // Mettre à jour l'utilisateur dans la liste des utilisateurs
+        const users = getUsers();
+        const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+        saveUsers(updatedUsers);
+        
+        setUser(updatedUser);
+    };
+
     const value = {
         user,
         setUser,
@@ -78,7 +115,8 @@ export function AuthProvider({ children }) {
         register,
         logout,
         showAuth,
-        setShowAuth
+        setShowAuth,
+        updateUser
     };
 
     return (
