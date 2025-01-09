@@ -5,6 +5,10 @@ import './App.css'
 import { useAuth, AuthProvider } from './contexts/AuthContext'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
+import Market from './pages/Market'
+import Wallet from './pages/Wallet'
+import Profile from './pages/Profile'
+import Settings from './pages/Settings'
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -32,7 +36,43 @@ function AppContent() {
             </PrivateRoute>
           }
         />
-        <Route path="/crypto/:cryptoId" element={<CryptoDetailWrapper />} />
+        <Route path="/crypto/:cryptoId" 
+        element={
+            <CryptoDetailWrapper />
+        } 
+        />
+        <Route
+          path="/market"
+          element={
+            <PrivateRoute>
+              <Market />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/wallet"
+          element={
+            <PrivateRoute>
+              <Wallet />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <Settings />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </div>
   );
