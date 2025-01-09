@@ -37,6 +37,7 @@ export default function Chart({ cryptoId }) {
         groupedData[date] = close; // Utiliser le prix de clôture par jour
       }
     });
+    
     // Convertir les données en tableau
     return Object.entries(groupedData).map(([date, close]) => ({
       date,
