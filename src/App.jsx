@@ -40,7 +40,6 @@ function AppContent() {
 
 const CryptoDetailWrapper = () => {
   const { cryptoId } = useParams();
-  console.log(cryptoId);
   return <SingleCoin cryptoId={cryptoId} />;
 };
 
