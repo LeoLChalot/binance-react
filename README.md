@@ -2,4 +2,5 @@
 
 Run before start project :
 
-- npm install tailwindcss
+- npm install
+- npm run dev
