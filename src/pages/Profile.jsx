@@ -22,8 +22,7 @@ export default function Profile() {
             <Navbar navbarConnected />
             <div className="ml-20 p-8">
                 <h1 className="text-3xl font-bold mb-6 text-left">Profil</h1>
-                
-                <div className="bg-zinc-900 rounded-lg p-6 space-y-6">
+                <div className="border border-zinc-700 rounded-lg p-6 space-y-6">
                     <div className="flex items-center gap-x-6">
                         <div className="relative group">
                             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-zinc-700">
@@ -47,9 +46,9 @@ export default function Profile() {
                                 className="hidden"
                             />
                         </div>
-                        <div>
+                        <div className='text-left'>
                             <h2 className="text-xl font-bold">{user.email}</h2>
-                            <p className="text-white/70">Membre depuis le 9 janvier 2025</p>
+                            <p className="text-white/70">Membre depuis le {new Date(user.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')} </p>
                         </div>
                     </div>
 
