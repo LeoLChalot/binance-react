@@ -2,22 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  height: 100%;
-  background-color: black;
-}
-
-body {
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
-  background-color: black;
 }
 
 #root {
+  min-height: 100vh;
+  min-width: 100vw;
   height: 100%;
   width: 100%;
-  background-color: black;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
 }

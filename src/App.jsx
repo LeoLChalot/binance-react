@@ -20,7 +20,7 @@ function AppContent() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-full min-w-full bg-black">
+    <div className="h-full w-full flex-1">
       <Routes>
         <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Landing />} />
         <Route
@@ -40,7 +40,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="h-full w-full bg-black">
+        <div className="h-full w-full flex flex-col">
           <AppContent />
         </div>
       </AuthProvider>

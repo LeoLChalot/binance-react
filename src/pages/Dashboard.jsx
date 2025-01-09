@@ -6,8 +6,11 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-black text-white">
-            TEST
+            useContext test <br />
             <button onClick={logout}>Déco</button>
+            <p>{user.email}</p>
+            <p>{user.balance}</p>
+            <p>{user.history}</p>
         </div>
     );
 }

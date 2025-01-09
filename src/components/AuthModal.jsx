@@ -27,7 +27,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
         const success = isLogin 
             ? await login({ email: formData.email, password: formData.password })
-            : await register({ email: formData.email, password: formData.password });
+            : await register({ email: formData.email, password: formData.password, balance: 0, history: [] });
         
         if (success) {
             onClose();
@@ -50,7 +50,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
                 <div className="mb-8">
                     <h2 className="text-2xl font-bold text-white mb-2">
-                        {isLogin ? 'Content de vous revoir' : 'Creer un compte'}
+                        {isLogin ? 'Content de vous revoir' : 'Bienvenue parmi nous'}
                     </h2>
                     <p className="text-gray-400">
                         {isLogin ? 'Continuez votre investissement' : 'Commencez votre investissement'}
@@ -106,7 +106,7 @@ export default function AuthModal({ isOpen, onClose }) {
                         onClick={() => setIsLogin(!isLogin)}
                         className="text-green-500 hover:text-green-400 transition-colors"
                     >
-                        {isLogin ? "Deja un compte ? Connectez-vous" : 'Pas encore de compte ? Inscrivez-vous'}
+                        {isLogin ? "Déja un compte ?" : 'Pas encore de compte ?'}
                     </button>
                 </div>
             </div>
