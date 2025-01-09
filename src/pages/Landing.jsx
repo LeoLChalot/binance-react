@@ -17,7 +17,7 @@ export default function Landing() {
                         <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6">
                             La crypto pour tous
                         </h1>
-                        <p className="text-xl text-gray-400 mb-32">
+                        <p className="text-xl font-extralight text-white mb-32">
                             CrypTOP, c'est la plateforme tout-en-un pour gérer votre portefeuille facilement, en toute securité et en toute confiance.
                         </p>
                         <button
