@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AuthModal from '../components/AuthModal';
+import Navbar from '../components/Navbar';
 import { MoveUpRight, Star } from 'lucide-react';
 
 export default function Landing() {
@@ -7,22 +8,8 @@ export default function Landing() {
 
     return (
         <div className="h-full w-full flex flex-col bg-black">
-            <nav className="border-b border-zinc-800 w-full">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 items-center">
-                        <div className="text-white text-xl font-bold">                            
-                            CrypTOP
-                        </div>
 
-                        <button
-                            onClick={() => setIsModalOpen(true)}
-                            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
-                        >
-                            Me connecter
-                        </button>
-                    </div>
-                </div>
-            </nav>
+            <Navbar setIsModalOpen={setIsModalOpen} />
 
             <main className="flex-1 w-full">
                 <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -30,7 +17,7 @@ export default function Landing() {
                         <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6">
                             La crypto pour tous
                         </h1>
-                        <p className="text-xl text-gray-400 mb-32">
+                        <p className="text-xl font-extralight text-white mb-32">
                             CrypTOP, c'est la plateforme tout-en-un pour gérer votre portefeuille facilement, en toute securité et en toute confiance.
                         </p>
                         <button
