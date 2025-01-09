@@ -10,7 +10,6 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
 
     if (navbarConnected) {
         const menuItems = [
-            { icon: Home, path: '/dashboard', label: 'Accueil' },
             { icon: BarChart2, path: '/market', label: 'Marché' },
             { icon: Wallet, path: '/wallet', label: 'Portefeuille' },
             { icon: User, path: '/profile', label: 'Profil' }
@@ -21,7 +20,7 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                 <div className="text-white text-xl font-bold flex items-center">
                     <img src={Logo} alt="CrypTOP" className="h-10 w-10 inline-block" />
                 </div>
-                <div className="flex-1 flex flex-col items-center space-y-6 mt-6">
+                <div className="flex-1 flex flex-col items-center space-y-6 mt-8">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = location.pathname === item.path;

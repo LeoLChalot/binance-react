@@ -8,6 +8,9 @@ export default function Market() {
     return (
         <div className="min-h-screen bg-black text-white">
             <Navbar navbarConnected />
+            <div className="ml-20 p-8">
+                <h1 className="text-3xl font-bold mb-6 text-left">Marché</h1>
+            </div>
         </div>
     );
 }
