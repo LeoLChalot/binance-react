@@ -1,24 +1,68 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { Home, BarChart2, Wallet, User, LogOut } from 'lucide-react';
+import Logo from '../assets/cryptop.png';
 
 export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const location = useLocation();
 
-    const navButtonStyle = "relative py-1 text-white/70 hover:text-white transition-colors duration-200 after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-[1px] after:bottom-0 after:left-0 after:bg-white/40 after:transition-transform after:duration-200 hover:after:scale-x-100";
-    const activeStyle = "text-white after:scale-x-100";
+    if (navbarConnected) {
+        const menuItems = [
+            { icon: Home, path: '/dashboard', label: 'Accueil' },
+            { icon: BarChart2, path: '/market', label: 'Marché' },
+            { icon: Wallet, path: '/wallet', label: 'Portefeuille' },
+            { icon: User, path: '/profile', label: 'Profil' }
+        ];
 
-    const isActive = (path) => {
-        return location.pathname === path;
-    };
+        return (
+            <nav className="fixed left-0 top-0 h-screen w-20 border-r border-zinc-800 flex flex-col items-center py-6">
+                <div className="text-white text-xl font-bold flex items-center">
+                    <img src={Logo} alt="CrypTOP" className="h-10 w-10 inline-block" />
+                </div>
+                <div className="flex-1 flex flex-col items-center space-y-6 mt-6">
+                    {menuItems.map((item) => {
+                        const Icon = item.icon;
+                        const isActive = location.pathname === item.path;
+                        
+                        return (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                className={`p-3 rounded-xl transition-all duration-200 group relative ${
+                                    isActive 
+                                    ? 'bg-zinc-800 text-white' 
+                                    : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'
+                                }`}
+                            >
+                                <Icon size={24} />
+                                <span className="absolute left-full ml-4 px-2 py-1 bg-zinc-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                                    {item.label}
+                                </span>
+                            </Link>
+                        );
+                    })}
+                </div>
 
-    if (navbarConnected === false) {
+                <button 
+                    onClick={logout}
+                    className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all duration-200 group relative"
+                >
+                    <LogOut size={24} />
+                    <span className="absolute left-full ml-4 px-2 py-1 bg-zinc-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                        Déconnexion
+                    </span>
+                </button>
+            </nav>
+        );
+    } else {
         return (
             <nav className="border-b border-zinc-800 w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <div className="text-white text-xl font-bold">
+                        <div className="text-white text-xl font-bold flex items-center gap-x-2">
+                            <img src={Logo} alt="CrypTOP" className="h-5 w-5 inline-block" />
                             CrypTOP
                         </div>
     
@@ -27,30 +71,6 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                             className="border border-white text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
                         >
                             Connexion
-                        </button>
-                    </div>
-                </div>
-            </nav>
-        );
-    } else {
-        return (
-            <nav className="border-b border-zinc-800 w-full">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 items-center">
-                        <div className="flex gap-x-8">
-                            <p className="text-white text-xl font-bold">CrypTOP</p>
-                            <Link to="/dashboard" className={`${navButtonStyle} ${isActive('/dashboard') ? activeStyle : ''}`}>Accueil</Link>
-                            <Link to="/market" className={`${navButtonStyle} ${isActive('/market') ? activeStyle : ''}`}>Marché</Link>
-                            <Link to="/wallet" className={`${navButtonStyle} ${isActive('/wallet') ? activeStyle : ''}`}>Portefeuille</Link>
-                            <Link to="/profile" className={`${navButtonStyle} ${isActive('/profile') ? activeStyle : ''}`}>Profil</Link>
-                            <Link to="/settings" className={`${navButtonStyle} ${isActive('/settings') ? activeStyle : ''}`}>Paramètres</Link>
-                        </div>
-    
-                        <button
-                            onClick={logout}
-                            className="border border-white text-white px-4 py-2 rounded-lg hover:bg-red-900/50 transition-colors"
-                        >
-                            Déconnexion
                         </button>
                     </div>
                 </div>

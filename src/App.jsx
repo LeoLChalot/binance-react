@@ -7,7 +7,6 @@ import Dashboard from './pages/Dashboard'
 import Market from './pages/Market'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
-import Settings from './pages/Settings'
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -56,14 +55,6 @@ function AppContent() {
           element={
             <PrivateRoute>
               <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <PrivateRoute>
-              <Settings />
             </PrivateRoute>
           }
         />
