@@ -22,9 +22,9 @@ ChartJS.register(
 );
 
 export default function LineChart({ data }) {
-  console.log('LineChart data:', data); // Log data passed to LineChart
+  let { processedData, cryptoId } = data;
+  cryptoId = cryptoId.charAt(0).toUpperCase() + cryptoId.slice(1).toLowerCase()
 
-  // Options d'affichage et de mise en forme
   const options = {
     responsive: true,
 
@@ -34,20 +34,38 @@ export default function LineChart({ data }) {
       },
       title: {
         display: true,
-        text: 'Évolution des prix (Prix de clôture)',
+        text: `Évolution des prix : ${cryptoId}`,
+        color: 'rgba(238, 183, 9, 1)'
       },
-    }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.32)',
+        },
+      },
+      y: {
+        ticks: {
+          color: 'white',
+        },
+        grid: {
+          color: 'rgba(255, 255, 255, 0.32)',
+        },
+      },
+    },
   };
 
-  // Formattage des données du graphique
   const chartData = {
-    labels: data.map(({ date }) => date), // Labels de l'axe X
+    labels: processedData.map(({ date }) => date),
     datasets: [
       {
         label: 'Prix de clôture',
-        data: data.map(({ close }) => close),
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        data: processedData.map(({ close }) => close),
+        borderColor: 'rgba(238, 183, 9, 1)',
+        backgroundColor: 'rgb(255, 255, 255)',
         tension: 0.4,
       },
     ],
