@@ -11,7 +11,7 @@ export default function CryptoList({ cryptos, onCryptoClick }) {
                             <th className="py-4 px-6 font-medium">
                                 <div className="ml-11">Crypto</div>
                             </th>
-                            <th className="py-4 px-6 font-medium text-right">Prix</th>
+                            <th className="py-4 px-6 font-medium text-right">Prix actuel</th>
                             <th className="py-4 px-6 font-medium text-right">Capitalisation</th>
                             <th className="py-4 px-6 font-medium text-right">Volume (24h)</th>
                             <th className="py-4 px-6 font-medium text-right">Variation (24h)</th>

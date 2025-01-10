@@ -10,10 +10,10 @@ export default function CryptoRow({ crypto, onClick }) {
 
     const formatLargeNumber = (number) => {
         if (number >= 1e9) {
-            return `${(number / 1e9).toFixed(2)} Mrd €`;
+            return `${(number / 1e9).toFixed(2)} Mrd $`;
         }
         if (number >= 1e6) {
-            return `${(number / 1e6).toFixed(2)} M €`;
+            return `${(number / 1e6).toFixed(2)} M $`;
         }
         return formatPrice(number);
     };

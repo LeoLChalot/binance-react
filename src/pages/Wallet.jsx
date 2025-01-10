@@ -2,42 +2,62 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCrypto } from '../contexts/CryptoContext';
 import Navbar from '../components/Navbar';
+import FundingModal from '../components/Modal/FundingModal';
+import { Plus, Euro, Banknote, EqualApproximately } from 'lucide-react';
 
 export default function Wallet() {
-    const { user, updateUser } = useAuth();
-    const { cryptos, loading, error } = useCrypto();
-    const [amount, setAmount] = useState('');
-    const [fundingError, setFundingError] = useState('');
-    const [fundingSuccess, setFundingSuccess] = useState('');
+    const { user } = useAuth();
+    const { cryptos } = useCrypto();
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const calculateTotalValue = () => {
-        let total = user.walletData.balance; 
-        
-        user.walletData.tokenData.forEach(token => {
+    if (!user?.walletData) {
+        return (
+            <div className="min-h-screen bg-black text-white">
+                <Navbar navbarConnected />
+                <div className="ml-20 h-screen overflow-y-auto">
+                    <div className="p-8">
+                        <div className="flex flex-col justify-center items-start">
+                            <h1 className="text-3xl font-bold text-left">Mon Portefeuille</h1>
+                        </div>
+                        <div className="mt-8 text-center py-12 text-gray-400 bg-zinc-900/50 rounded-xl">
+                            <p>Chargement du portefeuille...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const calculateCryptoValue = () => {
+        if (!user.walletData.tokenData || !cryptos) return 0;
+        return user.walletData.tokenData.reduce((acc, token) => {
             const cryptoData = cryptos.find(c => c.id === token.id);
-            if (cryptoData) {
-                total += token.quantity * cryptoData.current_price;
-            }
-        });
-        
-        return total.toFixed(2);
+            if (!cryptoData) return acc;
+            return acc + ((token.quantity || 0) * cryptoData.current_price);
+        }, 0);
     };
 
-    const handleFunding = (e) => {
-        e.preventDefault();
-        setFundingError('');
-        setFundingSuccess('');
+    const calculateTotalValue = () => {
+        return (user.walletData.balance || 0) + calculateCryptoValue();
+    };
 
-        const fundAmount = parseFloat(amount);
-        if (isNaN(fundAmount) || fundAmount <= 0) {
-            setFundingError('Veuillez entrer un montant valide');
-            return;
-        }
+    const calculateInitialInvestment = () => {
+        if (!user.walletData.tokenData) return 0;
+        return user.walletData.tokenData.reduce((acc, token) => {
+            return acc + ((token.quantity || 0) * (token.purchasePrice || 0));
+        }, 0);
+    };
 
-        const updatedBalance = user.walletData.balance + fundAmount;
-        updateUser({ walletData: { ...user.walletData, balance: updatedBalance } });
-        setAmount('');
-        setFundingSuccess('Votre wallet a été approvisionné avec succès !');
+    const calculateTotalProfitLoss = () => {
+        const currentValue = calculateCryptoValue();
+        const investment = calculateInitialInvestment();
+        return currentValue - investment;
+    };
+
+    const calculateTotalProfitLossPercentage = () => {
+        const investment = calculateInitialInvestment();
+        if (investment === 0) return 0;
+        return (calculateTotalProfitLoss() / investment) * 100;
     };
 
     return (
@@ -45,99 +65,97 @@ export default function Wallet() {
             <Navbar navbarConnected />
             <div className="ml-20 h-screen overflow-y-auto">
                 <div className="p-8">
-                    <h1 className="text-3xl font-bold mb-8 text-left">Portefeuille</h1>
+                    <div className="flex flex-col justify-center items-start">
+                        <h1 className="text-3xl font-bold text-left">Mon Portefeuille</h1>
+                    </div>
 
-                    {error && (
-                        <div className="mb-6 p-4 bg-red-500/10 border border-red-500 text-red-500 rounded-lg">
-                            {error}
-                        </div>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
-                            <h2 className="text-lg text-gray-400 mb-2">Solde disponible</h2>
-                            <p className="text-2xl font-bold mb-4">${user.walletData.balance.toFixed(2)}</p>
-                            
-                            <form onSubmit={handleFunding} className="mt-4 space-y-3">
-                                {fundingError && (
-                                    <div className="p-2 bg-red-500/10 border border-red-500 text-red-500 rounded-lg text-sm">
-                                        {fundingError}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                        <div className="bg-zinc-900/50 rounded-xl p-6 border border-zinc-800/50 hover:border-zinc-700/50 transition-all">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-blue-500/10 p-2 rounded-lg">
+                                        <Euro className="w-5 h-5 text-blue-500" />
                                     </div>
-                                )}
-                                {fundingSuccess && (
-                                    <div className="p-2 bg-green-500/10 border border-green-500 text-green-500 rounded-lg text-sm">
-                                        {fundingSuccess}
-                                    </div>
-                                )}
-                                <div className="flex gap-2">
-                                    <input
-                                        type="number"
-                                        id="amount"
-                                        value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
-                                        className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-blue-500"
-                                        placeholder="Montant ($)"
-                                        step="0.01"
-                                        min="0"
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
-                                    >
-                                        +
-                                    </button>
+                                    <h2 className="text-lg font-semibold text-gray-300">Solde</h2>
                                 </div>
-                            </form>
-                        </div>
-                        
-                        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
-                            <h2 className="text-lg text-gray-400 mb-2">Valeur des cryptos</h2>
-                            <p className="text-2xl font-bold">
-                                ${loading ? (
-                                    <span className="text-gray-500">Chargement...</span>
-                                ) : (
-                                    (calculateTotalValue() - user.walletData.balance).toFixed(2)
-                                )}
-                            </p>
+                                <button
+                                    onClick={() => setIsModalOpen(true)}
+                                    className="flex items-center gap-2 border border-gray-500 hover:border-gray-400 text-gray-400 hover:text-gray-300 font-medium py-2 px-2 rounded-lg transition-colors text-sm"
+                                >
+                                    <Plus size={18} />
+                                </button>
+                            </div>
+                            <p className="text-3xl font-bold">{(user.walletData.balance || 0).toFixed(2)} $</p>
+                            <p className="text-sm text-gray-400 mt-1">Votre argent déposé</p>
                         </div>
 
-                        <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
-                            <h2 className="text-lg text-gray-400 mb-2">Valeur totale</h2>
-                            <p className="text-2xl font-bold text-green-500">
-                                ${loading ? (
-                                    <span className="text-gray-500">Chargement...</span>
-                                ) : calculateTotalValue()}
-                            </p>
+                        <div className="bg-zinc-900/50 rounded-xl p-6 border border-zinc-800/50 hover:border-zinc-700/50 transition-all">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-purple-500/10 p-2 rounded-lg">
+                                    <Banknote className="w-5 h-5 text-purple-500" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-gray-300">Valeur des cryptos</h2>
+                            </div>
+                            <p className="text-3xl font-bold">{calculateCryptoValue().toFixed(2)} $</p>
+                            <p className="text-sm text-gray-400 mt-1">En temps réel</p>
+                        </div>
+
+                        <div className="bg-zinc-900/50 rounded-xl p-6 border border-zinc-800/50 hover:border-zinc-700/50 transition-all">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-emerald-500/10 p-2 rounded-lg">
+                                    <Euro className="w-5 h-5 text-emerald-500" />
+                                </div>
+                                <h2 className="text-lg font-semibold text-gray-300">Valeur totale</h2>
+                            </div>
+                            <p className="text-3xl font-bold">{calculateTotalValue().toFixed(2)} $</p>
+                            <p className="text-sm text-gray-400 mt-1">Solde + Valeur des cryptos</p>
+                        </div>
+
+                        <div className="bg-zinc-900/50 rounded-xl p-6 border border-zinc-800/50 hover:border-zinc-700/50 transition-all">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className={`${calculateTotalProfitLoss() >= 0 ? 'bg-green-500/10' : 'bg-red-500/10'} p-2 rounded-lg`}>
+                                    <EqualApproximately className={`w-5 h-5 ${calculateTotalProfitLoss() >= 0 ? 'text-green-500' : 'text-red-500'}`} />
+                                </div>
+                                <h2 className="text-lg font-semibold text-gray-300">Performance</h2>
+                            </div>
+                            <div className="space-y-1">
+                                <p className={`text-3xl font-bold ${calculateTotalProfitLossPercentage() >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                    {calculateTotalProfitLossPercentage() >= 0 ? '+' : ''}{calculateTotalProfitLossPercentage().toFixed(2)}%
+                                </p>
+                                <p className={`text-sm text-gray-400`}>
+                                    {calculateTotalProfitLoss() >= 0 ? '+' : ''}{calculateTotalProfitLoss().toFixed(2)} $
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="bg-zinc-900 rounded-xl border border-zinc-800">
-                        <div className="p-6 border-b border-zinc-800">
-                            <h2 className="text-xl font-bold">Mes cryptomonnaies</h2>
-                        </div>
-                        
-                        {loading ? (
-                            <div className="p-6 text-center">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto"></div>
-                            </div>
-                        ) : user.walletData.tokenData.length === 0 ? (
-                            <div className="p-6 text-center text-gray-400">
-                                Vous ne possédez pas encore de cryptomonnaies
-                            </div>
-                        ) : (
-                            <div className="overflow-x-auto">
+                    {user.walletData.tokenData && user.walletData.tokenData.length > 0 ? (
+                        <div className="mt-8">
+                            <h2 className="text-xl font-bold mb-6 text-left">Mes Crypto-monnaies</h2>
+                            <div className="bg-zinc-900/50 rounded-xl overflow-hidden">
                                 <table className="w-full">
                                     <thead>
                                         <tr className="text-left text-sm text-gray-400">
-                                            <th className="p-4">Crypto</th>
-                                            <th className="p-4">Quantité</th>
-                                            <th className="p-4">Prix actuel</th>
-                                            <th className="p-4">Valeur totale</th>
+                                            <th className="p-4 font-medium text-left">Crypto</th>
+                                            <th className="p-4 font-medium text-left">Quantité</th>
+                                            <th className="p-4 font-medium text-left">Valeur unitaire à l'achat</th>
+                                            <th className="p-4 font-medium text-left">Valeur unitaire actuelle</th>
+                                            <th className="p-4 font-medium text-left">Valeur total à l'achat</th>
+                                            <th className="p-4 font-medium text-left">Valeur total actuelle</th>
+                                            <th className="p-4 font-medium text-left">Variation</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {user.walletData.tokenData.map((token) => {
+                                        {user.walletData.tokenData.map(token => {
+                                            if (!token) return null;
                                             const cryptoData = cryptos.find(c => c.id === token.id);
+                                            const purchasePrice = token.purchasePrice || 0;
+                                            const currentPrice = cryptoData?.current_price || purchasePrice;
+                                            const totalPurchaseValue = (token.quantity || 0) * purchasePrice;
+                                            const totalValue = (token.quantity || 0) * currentPrice;
+                                            const quantity = token.quantity || 0;
+                                            const priceChange = purchasePrice ? ((totalValue - totalPurchaseValue) / totalPurchaseValue) * 100 : 0;
+
                                             return (
                                                 <tr 
                                                     key={token.id}
@@ -145,35 +163,17 @@ export default function Wallet() {
                                                 >
                                                     <td className="p-4">
                                                         <div className="flex items-center gap-3">
-                                                            <img 
-                                                                src={cryptoData?.image} 
-                                                                alt={cryptoData?.name} 
-                                                                className="w-8 h-8 rounded-full"
-                                                            />
-                                                            <div>
-                                                                <div className="font-medium">{cryptoData?.name}</div>
-                                                                <div className="text-sm text-gray-400">
-                                                                    {cryptoData?.symbol.toUpperCase()}
-                                                                </div>
-                                                            </div>
+                                                            <img src={cryptoData?.image || token.image} alt={token.name} className="w-8 h-8 rounded-full" />
+                                                            <span className="font-medium">{(token.symbol || '').toUpperCase()}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="p-4">
-                                                        {token.quantity}
-                                                    </td>
-                                                    <td className="p-4">
-                                                        {cryptoData ? (
-                                                            `$${cryptoData.current_price.toFixed(2)}`
-                                                        ) : (
-                                                            <span className="text-gray-500">-</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="p-4">
-                                                        {cryptoData ? (
-                                                            `$${(token.quantity * cryptoData.current_price).toFixed(2)}`
-                                                        ) : (
-                                                            <span className="text-gray-500">-</span>
-                                                        )}
+                                                    <td className="p-4 text-left">{quantity.toFixed(8)}</td>
+                                                    <td className="p-4 text-left">{purchasePrice.toFixed(2)} $</td>
+                                                    <td className="p-4 text-left">{currentPrice.toFixed(2)} $</td>
+                                                    <td className="p-4 text-left">{totalPurchaseValue.toFixed(2)} $</td>
+                                                    <td className="p-4 text-left">{totalValue.toFixed(2)} $</td>
+                                                    <td className={`p-4 text-left ${priceChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                                        {priceChange.toFixed(2)}%
                                                     </td>
                                                 </tr>
                                             );
@@ -181,10 +181,19 @@ export default function Wallet() {
                                     </tbody>
                                 </table>
                             </div>
-                        )}
-                    </div>
+                        </div>
+                    ) : (
+                        <div className="mt-8 text-center py-12 text-gray-400 bg-zinc-900/50 rounded-xl">
+                            <p>Vous n'avez pas encore de crypto-monnaies</p>
+                        </div>
+                    )}
                 </div>
             </div>
+
+            <FundingModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 }

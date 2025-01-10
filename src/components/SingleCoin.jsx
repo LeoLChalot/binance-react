@@ -77,11 +77,12 @@ const SingleCoin = ({ cryptoId }) => {
             <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow-md">
               <div className="flex items-center gap-2 mb-4">
                 <DollarSign className="w-6 h-6 text-yellow-500" />
-                <span className="text-2xl font-bold text-white">
-                  ${cryptoData.market_data.current_price.usd.toLocaleString()}
-                </span>
+                <h2 className="text-lg font-bold text-white">Valeur actuelle</h2>
               </div>
               <div className={`${priceChangeColor} text-xl`}>
+                <span className="text-2xl font-bold text-white mr-4">
+                  ${cryptoData.market_data.current_price.usd.toLocaleString()}
+                </span>
                 {cryptoData.market_data.price_change_percentage_24h > 0 ? '+' : ''}
                 {cryptoData.market_data.price_change_percentage_24h.toFixed(2)}%
               </div>
