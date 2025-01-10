@@ -65,11 +65,8 @@ export default function Blog() {
                             </div>
                         )}
                     </div>
-                    {comments.length > 0 && selectedCrypto != searchTerm ? (
-                        <Comments key={selectedCrypto} cryptoId={selectedCrypto}/>
-                    ) : (
-                        <p className="text-gray-500">Aucun commentaire pour cette cryptomonnaie.</p>
-                    )}
+
+                    <Comments key={selectedCrypto} cryptoId={selectedCrypto}/>
                 </div>
             </main>
         </div>
