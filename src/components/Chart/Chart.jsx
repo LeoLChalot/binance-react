@@ -65,14 +65,14 @@ export default function Chart({ cryptoId }) {
         close,
       }));
    };
-
    */
 
   const fetchPriceHistory = async (crypto) => {
 
     const params = {
       vs_currency: 'usd',
-      days: 30,
+      from: 1733871605,
+      to: 1736463605
     };
     const url = new URL(`${API_URL}/coins/${crypto}/market_chart/range`);
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
@@ -89,26 +89,19 @@ export default function Chart({ cryptoId }) {
       .catch(error => console.error('Error:', error))
   }
 
-  const processLineData = (data) => {
-    setRawData(data.price);
-  };
-
-
   const fetchData = async () => {
     await fetchPriceHistory(crypto);
-    const formattedData = processLineData(rawData);
-    console.log('Processed data:', formattedData); // Log processed data
-    setProcessedData(formattedData);
+
   };
 
   useEffect(() => {
-    // fetchData();
-  }, [rawData])
+    fetchData();
+  }, [])
 
   return (
     <>
       <div style={{ width: '800px', height: '600px' }}>
-        <LineChart data={processedData} />
+        <LineChart cryptoName={cryptoId} data={rawData} />
       </div>
     </>
   )
