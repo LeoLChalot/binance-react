@@ -107,6 +107,12 @@ const SingleCoin = ({ cryptoId }) => {
             </div>
           </div>
 
+          <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
+            <button className="bg-green-800 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2">Acheter</button>
+            <button className="bg-yellow-800 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2">Mettre un rappel</button>
+            <button className="bg-red-800 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2">Vendre</button>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-4">
             <Chart cryptoId={cryptoId} />
           </div>
