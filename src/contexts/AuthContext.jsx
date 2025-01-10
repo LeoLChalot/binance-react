@@ -88,7 +88,6 @@ export function AuthProvider({ children }) {
     const updateUser = (updates) => {
         const updatedUser = { ...user };
         
-        // Mise à jour des données du compte
         if (updates.firstName !== undefined) {
             updatedUser.accountData.firstName = updates.firstName;
         }

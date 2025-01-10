@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useAlert } from '../../contexts/AlertContext';
 import { X, AlertTriangle } from 'lucide-react';
 
 const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
@@ -8,6 +9,7 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
     const [success, setSuccess] = useState('');
     const [alertType, setAlertType] = useState('above');
     const { user, updateUser } = useAuth();
+    const { addAlert } = useAlert();
 
     if (!isOpen || !cryptoData || !user?.walletData) return null;
 
@@ -35,14 +37,12 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                     return;
                 }
 
-                // Mise à jour de tokenData
                 let updatedTokenData = [...tokenData];
                 const existingTokenIndex = tokenData.findIndex(
                     token => token.id === cryptoData.id
                 );
 
                 if (existingTokenIndex !== -1) {
-                    // Mettre à jour le token existant
                     const existingToken = updatedTokenData[existingTokenIndex];
                     const totalQuantity = existingToken.quantity + value;
                     const averagePrice = ((existingToken.purchasePrice * existingToken.quantity) + (currentPrice * value)) / totalQuantity;
@@ -54,7 +54,6 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                         lastUpdated: new Date().toISOString()
                     };
                 } else {
-                    // Ajouter un nouveau token
                     updatedTokenData.push({
                         id: cryptoData.id,
                         symbol: cryptoData.symbol,
@@ -66,7 +65,6 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                     });
                 }
 
-                // Mise à jour de l'historique des investissements
                 const newInvestHistory = [
                     ...investHistory,
                     {
@@ -143,8 +141,7 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                 break;
 
             case 'alert':
-                const alerts = JSON.parse(localStorage.getItem('priceAlerts') || '{}');
-                alerts[cryptoData.id] = {
+                const alertData = {
                     targetPrice: value,
                     currentPrice: currentPrice,
                     symbol: cryptoData.symbol,
@@ -152,7 +149,7 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                     alertType: alertType,
                     timestamp: new Date().toISOString()
                 };
-                localStorage.setItem('priceAlerts', JSON.stringify(alerts));
+                addAlert(cryptoData.id, alertData);
                 setSuccess('Alerte de prix configurée pour ' + (alertType === 'above' ? 'supérieur' : 'inférieur') + ' à $' + value);
                 break;
         }
