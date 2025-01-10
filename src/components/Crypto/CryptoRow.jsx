@@ -4,8 +4,9 @@ export default function CryptoRow({ crypto, onClick }) {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('fr-FR', {
             style: 'currency',
-            currency: 'EUR'
-        }).format(price);
+            currency: 'USD',
+            minimumFractionDigits: 0
+        }).format(price).replace(/,/, ' ');
     };
 
     const formatLargeNumber = (number) => {
