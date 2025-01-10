@@ -14,7 +14,7 @@ export default function Chart({ cryptoId }) {
       from: 1733871605,
       to: 1736463605
     };
-    const url = new URL(`${API_URL}/coins/${crypto}/market_chart/range`);
+    const url = new URL(`${API_URL}/coins/${cryptoId}/market_chart/range`);
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
     try {
@@ -49,9 +49,6 @@ export default function Chart({ cryptoId }) {
 
   const fetchData = async () => {
     await fetchPriceHistory(crypto);
-    const formattedData = processLineData(rawData);
-    console.log("Processed data:", formattedData);
-    setProcessedData(formattedData);
   };
 
   useEffect(() => {
@@ -62,7 +59,7 @@ export default function Chart({ cryptoId }) {
     <>
       <div className="mt-3 w-full flex justify-center items-center">
         <div className="w-full h-auto">
-          <LineChart data={{ processedData, cryptoId }} />
+          <LineChart cryptoName={cryptoId} data={ rawData } />
         </div>
       </div>
     </>
