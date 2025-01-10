@@ -3,12 +3,13 @@ import { useAuth } from '../contexts/AuthContext';
 import { useCrypto } from '../contexts/CryptoContext';
 import Navbar from '../components/Navbar';
 import FundingModal from '../components/Modal/FundingModal';
-import { Plus, Euro, Banknote, EqualApproximately } from 'lucide-react';
+import { Plus, Euro, Banknote, EqualApproximately, Minus } from 'lucide-react';
 
 export default function Wallet() {
     const { user } = useAuth();
     const { cryptos } = useCrypto();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+    const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
     if (!user?.walletData) {
         return (
@@ -78,12 +79,20 @@ export default function Wallet() {
                                     </div>
                                     <h2 className="text-lg font-semibold text-gray-300">Solde</h2>
                                 </div>
-                                <button
-                                    onClick={() => setIsModalOpen(true)}
-                                    className="flex items-center gap-2 border border-gray-500 hover:border-gray-400 text-gray-400 hover:text-gray-300 font-medium py-2 px-2 rounded-lg transition-colors text-sm"
-                                >
-                                    <Plus size={18} />
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setIsWithdrawModalOpen(true)}
+                                        className="flex items-center gap-2 border border-gray-500 hover:border-gray-400 text-gray-400 hover:text-gray-300 font-medium py-2 px-2 rounded-lg transition-colors text-sm"
+                                    >
+                                        <Minus size={18} />
+                                    </button>
+                                    <button
+                                        onClick={() => setIsDepositModalOpen(true)}
+                                        className="flex items-center gap-2 border border-gray-500 hover:border-gray-400 text-gray-400 hover:text-gray-300 font-medium py-2 px-2 rounded-lg transition-colors text-sm"
+                                    >
+                                        <Plus size={18} />
+                                    </button>
+                                </div>
                             </div>
                             <p className="text-3xl font-bold">{(user.walletData.balance || 0).toFixed(2)} $</p>
                             <p className="text-sm text-gray-400 mt-1">Votre argent déposé</p>
@@ -203,10 +212,15 @@ export default function Wallet() {
 
                 </div>
             </div>
-
             <FundingModal 
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isDepositModalOpen} 
+                onClose={() => setIsDepositModalOpen(false)} 
+                type="deposit"
+            />
+            <FundingModal 
+                isOpen={isWithdrawModalOpen} 
+                onClose={() => setIsWithdrawModalOpen(false)} 
+                type="withdraw"
             />
         </div>
     );
