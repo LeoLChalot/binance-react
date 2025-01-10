@@ -4,7 +4,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { useCrypto } from '../contexts/CryptoContext';
 import { Search } from 'lucide-react';
 import Navbar from '../components/Navbar';
-import CryptoList from '../components/CryptoList';
+import CryptoRow from '../components/Crypto/CryptoRow';
+import CryptoList from '../components/Crypto/CryptoList';
 
 export default function Market() {
     const { user } = useAuth();
@@ -22,6 +23,7 @@ export default function Market() {
     );
 
     return (
+
         <div className="min-h-screen bg-black text-white">
             <Navbar navbarConnected />
             <div className="ml-20 h-screen overflow-y-auto">
@@ -74,5 +76,6 @@ export default function Market() {
                 </div>
             </div>
         </div>
+
     );
 }

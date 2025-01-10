@@ -10,13 +10,12 @@ export default function Chart({ cryptoId }) {
 
   const fetchPriceHistory = async () => {
     const params = {
-      vs_currency: "usd",
-      days: 30,
+      vs_currency: 'usd',
+      from: 1733871605,
+      to: 1736463605
     };
-    const url = new URL(`${API_URL}/coins/${cryptoId}/ohlc`);
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key])
-    );
+    const url = new URL(`${API_URL}/coins/${crypto}/market_chart/range`);
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
     try {
       const response = await fetch(url, {
@@ -57,7 +56,7 @@ export default function Chart({ cryptoId }) {
 
   useEffect(() => {
     fetchData();
-  }, [rawData]);
+  }, [])
 
   return (
     <>
@@ -67,5 +66,5 @@ export default function Chart({ cryptoId }) {
         </div>
       </div>
     </>
-  );
+  )
 }
