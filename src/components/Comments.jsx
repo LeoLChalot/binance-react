@@ -91,9 +91,15 @@ const Comments = ({ cryptoId }) => {
     // Seems to be useless now
 
     const getUserNameById = (id) => {
-        const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-        const user = storedUsers.find((user) => user.id === id);
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find((user) => user.id === id);
         return user ? user.accountData.email : "Utilisateur inconnu";
+    };
+
+    const getUserEmailById = (id) => {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find((user) => user.id === id);
+        return user ? user.accountData.email : "unknown";
     };
 
     const handleFilter = (e) => {
@@ -149,7 +155,7 @@ const Comments = ({ cryptoId }) => {
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.idUser}`}
+                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(getUserEmailById(comment.idUser))}`}
                                         alt="Avatar"
                                         className="w-8 h-8 rounded-full bg-gray-600"
                                     />
