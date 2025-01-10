@@ -33,26 +33,10 @@ export function AuthProvider({ children }) {
 
     const login = (userData) => {
         const users = getUsers();
-        const user = users.find(u => u.email === userData.email && u.password === userData.password);
+        const user = users.find(u => u.accountData.email === userData.email && u.accountData.password === userData.password);
         if (user) {
-            const defaultUser = {
-                id: user.id,
-                email: user.email,
-                password: user.password,
-                balance: user.balance || 0,
-                history: user.history || [],
-                profilePic: user.profilePic || null,
-                createdAt: user.createdAt || new Date().toISOString()
-            };
-
-            const updatedUser = { ...defaultUser, ...user };
-            
-            setUser(updatedUser);
-            localStorage.setItem('user', JSON.stringify(updatedUser));
-
-            const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
-            saveUsers(updatedUsers);
-
+            setUser(user);
+            localStorage.setItem('user', JSON.stringify(user));
             setShowAuth(false);
             return true;
         }
@@ -61,20 +45,27 @@ export function AuthProvider({ children }) {
 
     const register = (userData) => {
         const users = getUsers();
-        const existingUser = users.find(u => u.email === userData.email);
+        const existingUser = users.find(u => u.accountData.email === userData.email);
         
         if (existingUser) {
             return false;
         }
         
         const newUser = {
-            id: uuidv4(),
-            email: userData.email,
-            password: userData.password,
-            balance: 0,
-            history: [],
-            profilePic: null,
-            createdAt: new Date().toISOString()
+            accountData: {
+                id: uuidv4(),
+                email: userData.email,
+                password: userData.password,
+                profilePic: null,
+                createdAt: new Date().toISOString()
+            },
+            walletData: {
+                balance: 0,
+                tokenData: [],
+                investHistory: [],
+                withdrawHistory: [],
+                beneficiary: []
+            }
         };
 
         users.push(newUser);
@@ -92,11 +83,31 @@ export function AuthProvider({ children }) {
         navigate('/');
     };
 
-    const updateUser = (newUserData) => {
-        const updatedUser = { ...user, ...newUserData };
+    const updateUser = (updates) => {
+        const updatedUser = { ...user };
+        
+        if (updates.profilePic !== undefined) {
+            updatedUser.accountData.profilePic = updates.profilePic;
+        }
+        if (updates.balance !== undefined) {
+            updatedUser.walletData.balance = updates.balance;
+        }
+        if (updates.tokenData) {
+            updatedUser.walletData.tokenData = updates.tokenData;
+        }
+        if (updates.investHistory) {
+            updatedUser.walletData.investHistory = updates.investHistory;
+        }
+        if (updates.withdrawHistory) {
+            updatedUser.walletData.withdrawHistory = updates.withdrawHistory;
+        }
+        if (updates.beneficiary) {
+            updatedUser.walletData.beneficiary = updates.beneficiary;
+        }
         localStorage.setItem('user', JSON.stringify(updatedUser));
+        
         const users = getUsers();
-        const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+        const updatedUsers = users.map(u => u.accountData.id === updatedUser.accountData.id ? updatedUser : u);
         saveUsers(updatedUsers);
         
         setUser(updatedUser);

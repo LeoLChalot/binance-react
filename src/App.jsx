@@ -6,6 +6,7 @@ import Landing from './pages/Landing'
 import Market from './pages/Market'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
+import Transactions from './pages/Transactions'
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -46,6 +47,14 @@ function AppContent() {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <PrivateRoute>
+              <Transactions />
             </PrivateRoute>
           }
         />

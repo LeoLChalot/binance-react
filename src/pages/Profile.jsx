@@ -11,7 +11,7 @@ export default function Profile() {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                updateUser({ profilePic: reader.result });
+                updateUser({ accountData: { ...user.accountData, profilePic: reader.result } });
             };
             reader.readAsDataURL(file);
         }
@@ -27,7 +27,7 @@ export default function Profile() {
                         <div className="relative group">
                             <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-zinc-700">
                                 <img 
-                                    src={user.profilePic || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.email}
+                                    src={user.accountData.profilePic || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.accountData.email}
                                     alt="Profile" 
                                     className="w-full h-full object-cover"
                                 />
@@ -47,8 +47,14 @@ export default function Profile() {
                             />
                         </div>
                         <div className='text-left'>
-                            <h2 className="text-xl font-bold">{user.email}</h2>
-                            <p className="text-white/70">Membre depuis le {new Date(user.createdAt).toLocaleString('fr-FR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')} </p>
+                            <h2 className="text-xl font-bold">{user.accountData.email}</h2>
+                            <p className="text-white/70">
+                                Membre depuis le {new Date(user.accountData.createdAt).toLocaleString('fr-FR', { 
+                                    year: 'numeric', 
+                                    month: '2-digit', 
+                                    day: '2-digit' 
+                                }).replace(/\//g, '/')}
+                            </p>
                         </div>
                     </div>
                 </div>
