@@ -41,6 +41,8 @@ export default function Market() {
                 <div className="ml-20 p-8">
                     <h1 className="text-3xl font-bold mb-4">Market List</h1>
                     <CryptoList cryptos={cryptos} />
+                    
+
                 </div>
             </div>
         </>
