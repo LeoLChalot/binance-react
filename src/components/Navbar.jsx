@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp } from 'lucide-react';
 import Logo from '../assets/cryptop.png';
+import AlertManager from './Alert/AlertManager';
 
 export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
     const { logout, user } = useAuth();
@@ -47,15 +48,15 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                     })}
                 </div>
 
-                <button 
-                    onClick={logout}
-                    className="p-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/50 transition-all duration-200 group relative"
-                >
-                    <LogOut size={24} />
-                    <span className="absolute left-full ml-4 px-2 py-1 bg-zinc-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
-                        Déconnexion
-                    </span>
-                </button>
+                <div className="flex flex-col items-end gap-2">
+                    <AlertManager />
+                    <button 
+                        onClick={logout}
+                        className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-white transition-colors"
+                    >
+                        <LogOut size={20} />
+                    </button>
+                </div>
             </nav>
         );
     } else {

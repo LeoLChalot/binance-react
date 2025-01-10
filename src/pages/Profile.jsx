@@ -79,7 +79,6 @@ export default function Profile() {
         }
 
         try {
-            // Mettre à jour toutes les informations de l'utilisateur
             await updateUser({
                 firstName: formData.firstName,
                 lastName: formData.lastName,

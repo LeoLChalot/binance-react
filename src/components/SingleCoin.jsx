@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import { DollarSign, Info } from "lucide-react";
 import Comments from "./Comments";
 import Chart from "./Chart/Chart";
+import TradeModal from "./Modal/TradeModal";
 
 const SingleCoin = ({ cryptoId }) => {
   const [cryptoData, setCryptoData] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState(null);
 
   useEffect(() => {
     const fetchCryptoData = async () => {
@@ -27,6 +30,16 @@ const SingleCoin = ({ cryptoId }) => {
 
     fetchCryptoData();
   }, [cryptoId]);
+
+  const handleOpenModal = (type) => {
+    setModalType(type);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setModalType(null);
+  };
 
   if (!cryptoData) {
     return (
@@ -108,9 +121,24 @@ const SingleCoin = ({ cryptoId }) => {
           </div>
 
           <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
-            <button className="bg-green-800 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2">Acheter</button>
-            <button className="bg-yellow-800 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2">Mettre un rappel</button>
-            <button className="bg-red-800 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2">Vendre</button>
+            <button 
+              onClick={() => handleOpenModal('buy')}
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2 transition-colors"
+            >
+              Acheter
+            </button>
+            <button 
+              onClick={() => handleOpenModal('alert')}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2 transition-colors"
+            >
+              Mettre un rappel
+            </button>
+            <button 
+              onClick={() => handleOpenModal('sell')}
+              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md shadow-md w-full md:w-1/2 transition-colors"
+            >
+              Vendre
+            </button>
           </div>
 
           <div className="flex flex-col md:flex-row gap-4">
@@ -119,6 +147,15 @@ const SingleCoin = ({ cryptoId }) => {
         </div>
       </div>
       <Comments cryptoId={cryptoId} />
+      
+      {isModalOpen && (
+        <TradeModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          type={modalType}
+          cryptoData={cryptoData}
+        />
+      )}
     </div>
   );
 }
