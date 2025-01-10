@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from "rea
 import SingleCoin from './components/SingleCoin'
 import './App.css'
 import { useAuth, AuthProvider } from './contexts/AuthContext'
+import { CryptoProvider } from './contexts/CryptoContext';
 import Landing from './pages/Landing'
 import Market from './pages/Market'
 import Wallet from './pages/Wallet'
@@ -78,9 +79,11 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="h-full w-full flex flex-col">
-          <AppContent />
-        </div>
+        <CryptoProvider>
+          <div className="h-full w-full flex flex-col">
+            <AppContent />
+          </div>
+        </CryptoProvider>
       </AuthProvider>
     </Router>
   );
