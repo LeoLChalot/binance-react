@@ -103,7 +103,7 @@ const Comments = ({ cryptoId }) => {
             filteredComments = commentsForThisCrypto.filter(comment => comment.downvote.length > 0);
         } else if (filter === "mine") {
             filteredComments = commentsForThisCrypto.filter(comment => comment.idUser === user.id);
-        } else if (filter === "date") { // Ajout de cette condition
+        } else if (filter === "date") { 
             filteredComments = commentsForThisCrypto.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         }
         setComments(filteredComments);
