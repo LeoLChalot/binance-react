@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { MessageCircle } from "lucide-react";
+import { ArrowBigUp, MessageCircle } from "lucide-react";
 
 const Comments = ({ cryptoId }) => {
     const [newComment, setNewComment] = useState("");
@@ -94,6 +94,23 @@ const Comments = ({ cryptoId }) => {
         return user ? user.email : "Utilisateur inconnu";
     };
 
+    const handleFilter = (e) => {
+        const filter = e.target.value;
+        const storedComments = JSON.parse(localStorage.getItem("comments")) || {};
+        const commentsForThisCrypto = storedComments[cryptoId] || [];
+        let filteredComments = commentsForThisCrypto;
+        if (filter === "upvoted") {
+            filteredComments = commentsForThisCrypto.filter(comment => comment.upvote.length > 0);
+        } else if (filter === "downvoted") {
+            filteredComments = commentsForThisCrypto.filter(comment => comment.downvote.length > 0);
+        } else if (filter === "mine") {
+            filteredComments = commentsForThisCrypto.filter(comment => comment.idUser === user.id);
+        } else if (filter === "date") { // Ajout de cette condition
+            filteredComments = commentsForThisCrypto.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+        setComments(filteredComments);
+    };
+
     return (
         <div className="flex-3 flex flex-col">
             <div>
@@ -102,7 +119,7 @@ const Comments = ({ cryptoId }) => {
                     <h2 className="text-lg font-bold yellow-text">Partager votre avis !</h2>
                 </div>
                 <textarea
-                    className="w-full p-2 border rounded-lg focus:ring focus:ring-purple-300"
+                    className="w-full p-2 border text-black rounded-lg focus:ring focus:ring-purple-300"
                     placeholder="Ajoutez vos commentaires sur cette crypto..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
@@ -114,49 +131,60 @@ const Comments = ({ cryptoId }) => {
                     Ajouter
                 </button>
             </div>
-
-            <div className="mt-6 flex-1 overflow-y-auto border-t pt-4">
+            <div className="mt-6 overflow-y-auto border-t pt-4">
                 <h3 className="text-lg font-semibold yellow-text">Commentaires :</h3>
-                {comments.length > 0 ? (
-                    comments.map((comment, index) => (
-                        <div
-                            key={index}
-                            className="p-4 border rounded-lg mb-2 bg-gray-50"
-                        >
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-gray-500">
-                                    {new Date(comment.timestamp).toLocaleString()} - {getUserNameById(comment.idUser)}
-                                </span>
-                                <div className="flex items-center gap-2">
-                                    <button
-                                        className="text-green-500"
-                                        onClick={() => handleVote(index, "upvote")}
-                                    >
-                                        ▲ {comment.upvote.length}
-                                    </button>
-                                    <button
-                                        className="text-red-500"
-                                        onClick={() => handleVote(index, "downvote")}
-                                    >
-                                        ▼ {comment.downvote.length}
-                                    </button>
-                                    {comment.idUser === user.id && (
-                                        <button
-                                            className="text-gray-500"
-                                            onClick={() => handleDeleteComment(index)}
-                                        >
-                                            Supprimer
-                                        </button>
-                                    )}
-                                </div>
-                            </div>
-                            <p className="text-gray-700">{comment.comment}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p className="text-gray-500">Aucun commentaire pour cette crypto.</p>
-                )}
+                <div className="mb-4"></div>
+                <select
+                    id="filter"
+                    className="mt-1 mx-auto block pl-3 pr-10 py-2 my-4 text-base text-black border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                    onChange={(e) => handleFilter(e)}
+                >
+                    <option value="all">Tous les commentaires</option>
+                    <option value="mine">Mes commentaires</option>
+                    <option value="date">Date de publication<ArrowBigUp /></option>
+                    <option value="upvoted">Commentaires <span className="text-green-500">▲</span></option>
+                    <option value="downvoted">Commentaires <span className="text-red-500">▼</span></option>
+                </select>
             </div>
+            {comments.length > 0 ? (
+                comments.map((comment, index) => (
+                    <div
+                        key={index}
+                        className="p-4 border rounded-lg mb-2 bg-gray-50"
+                    >
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm text-gray-500">
+                                {new Date(comment.timestamp).toLocaleString()} - {getUserNameById(comment.idUser)}
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    className="text-green-500"
+                                    onClick={() => handleVote(index, "upvote")}
+                                >
+                                    ▲ {comment.upvote.length}
+                                </button>
+                                <button
+                                    className="text-red-500"
+                                    onClick={() => handleVote(index, "downvote")}
+                                >
+                                    ▼ {comment.downvote.length}
+                                </button>
+                                {comment.idUser === user.id && (
+                                    <button
+                                        className="text-gray-500"
+                                        onClick={() => handleDeleteComment(index)}
+                                    >
+                                        Supprimer
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                        <p className="text-gray-700">{comment.comment}</p>
+                    </div>
+                ))
+            ) : (
+                <p className="text-gray-500">Aucun commentaire pour cette crypto.</p>
+            )}
         </div>
     );
 };
