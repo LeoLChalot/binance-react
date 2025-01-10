@@ -9,6 +9,7 @@ import Market from './pages/Market'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
 import Transactions from './pages/Transactions'
+import CryptoDetail from './pages/CryptoDetail'
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -28,16 +29,19 @@ function AppContent() {
     <div className="h-full w-full flex-1 bg-binance">
       <Routes>
         <Route path="/" element={user ? <Navigate to="/market" /> : <Landing />} />
-        <Route path="/crypto/:cryptoId" 
-        element={
-            <CryptoDetailWrapper />
-        } 
-        />
         <Route
           path="/market"
           element={
             <PrivateRoute>
               <Market />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/market/:cryptoId"
+          element={
+            <PrivateRoute>
+              <CryptoDetail />
             </PrivateRoute>
           }
         />
@@ -69,11 +73,6 @@ function AppContent() {
     </div>
   );
 }
-
-const CryptoDetailWrapper = () => {
-  const { cryptoId } = useParams();
-  return <SingleCoin cryptoId={cryptoId} />;
-};
 
 function App() {
   return (
