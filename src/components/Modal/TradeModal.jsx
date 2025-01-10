@@ -204,10 +204,20 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                         <div className="text-sm text-yellow-200">
                             <p className="font-medium mb-1">Prix actuel: ${cryptoData.market_data.current_price.usd}</p>
                             {type === 'buy' && (
-                                <p>Solde disponible: ${user.walletData.balance.toFixed(2)}</p>
+                                <>
+                                    <p>Solde disponible: ${user.walletData.balance.toFixed(2)}</p>
+                                    <p className="mt-1 text-yellow-400">
+                                        Vous pouvez acheter jusqu'à {(user.walletData.balance / cryptoData.market_data.current_price.usd).toFixed(8)} {cryptoData.symbol.toUpperCase()}
+                                    </p>
+                                </>
                             )}
                             {type === 'sell' && (
-                                <p>Quantité détenue: {currentQuantity} {cryptoData.symbol.toUpperCase()}</p>
+                                <>
+                                    <p>Quantité détenue: {currentQuantity} {cryptoData.symbol.toUpperCase()}</p>
+                                    <p className="mt-1 text-yellow-400">
+                                        Valeur totale: ${(currentQuantity * cryptoData.market_data.current_price.usd).toFixed(2)}
+                                    </p>
+                                </>
                             )}
                         </div>
                     </div>
