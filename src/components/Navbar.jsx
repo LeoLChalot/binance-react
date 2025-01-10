@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, BarChart2, Wallet, User, LogOut } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp, Search } from 'lucide-react';
 import Logo from '../assets/cryptop.png';
 
 export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
@@ -10,9 +10,10 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
 
     if (navbarConnected) {
         const menuItems = [
-            { icon: Home, path: '/dashboard', label: 'Accueil' },
             { icon: BarChart2, path: '/market', label: 'Marché' },
+            { icon: Search, label: 'Rechercher' },
             { icon: Wallet, path: '/wallet', label: 'Portefeuille' },
+            { icon: ArrowDownUp, path: '/transactions', label: 'Transactions' },
             { icon: User, path: '/profile', label: 'Profil' }
         ];
 
@@ -21,7 +22,7 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                 <div className="text-white text-xl font-bold flex items-center">
                     <img src={Logo} alt="CrypTOP" className="h-10 w-10 inline-block" />
                 </div>
-                <div className="flex-1 flex flex-col items-center space-y-6 mt-6">
+                <div className="flex-1 flex flex-col items-center space-y-6 mt-8">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = location.pathname === item.path;
@@ -37,7 +38,7 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                                 }`}
                             >
                                 <Icon size={24} />
-                                <span className="absolute left-full ml-4 px-2 py-1 bg-zinc-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
+                                <span className="absolute left-16 ml-4 bottom-2 px-2 py-1 bg-zinc-800 text-white text-sm rounded-md opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap">
                                     {item.label}
                                 </span>
                             </Link>
