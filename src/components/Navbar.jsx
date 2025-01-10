@@ -16,6 +16,8 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
             { icon: User, path: '/profile', label: 'Profil' }
         ];
 
+        const isMarketActive = location.pathname.startsWith('/market');
+
         return (
             <nav className="fixed left-0 top-0 h-screen w-20 border-r border-zinc-800 flex flex-col items-center py-6">
                 <div className="text-white text-xl font-bold flex items-center">
@@ -24,7 +26,7 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
                 <div className="flex-1 flex flex-col items-center space-y-6 mt-8">
                     {menuItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = location.pathname === item.path;
+                        const isActive = item.path === '/market' ? isMarketActive : location.pathname === item.path;
                         
                         return (
                             <Link

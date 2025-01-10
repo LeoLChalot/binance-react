@@ -7,6 +7,8 @@ export default function Chart({ cryptoId }) {
   const [crypto, setCrypto] = useState("bitcoin");
   const [rawData, setRawData] = useState([]);
   const [processedData, setProcessedData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchPriceHistory = async () => {
     const params = {
@@ -18,17 +20,23 @@ export default function Chart({ cryptoId }) {
       url.searchParams.append(key, params[key])
     );
 
-    await fetch(url, {
-      headers: {
-        "X-x-cg-demo-api-key": API_KEY,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Raw data:", data); // Log data
-        setRawData(data);
-      })
-      .catch((error) => console.error("Error:", error));
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetch(url, {
+        headers: {
+          "X-x-cg-demo-api-key": API_KEY,
+        },
+      });
+      const data = await response.json();
+      console.log("Raw data:", data);
+      setRawData(data);
+    } catch (error) {
+      console.error("Error:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const processLineData = (data) => {
@@ -50,13 +58,21 @@ export default function Chart({ cryptoId }) {
   const fetchData = async () => {
     await fetchPriceHistory(crypto);
     const formattedData = processLineData(rawData);
-    console.log("Processed data:", formattedData); // Log processed data
+    console.log("Processed data:", formattedData);
     setProcessedData(formattedData);
   };
 
   useEffect(() => {
     fetchData();
   }, [rawData]);
+
+  if (loading) {
+    return (
+      <div className="mt-3 w-full flex justify-center items-center h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-yellow-500"></div>
+      </div>
+    );
+  }
 
   return (
     <>
