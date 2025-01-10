@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCrypto } from '../contexts/CryptoContext';
 import Navbar from '../components/Navbar';
 
 export default function Wallet() {
-    const { user } = useAuth();
+    const { user, updateUser } = useAuth();
     const { cryptos, loading, error } = useCrypto();
+    const [amount, setAmount] = useState('');
+    const [fundingError, setFundingError] = useState('');
+    const [fundingSuccess, setFundingSuccess] = useState('');
 
     const calculateTotalValue = () => {
         let total = user.walletData.balance; 
@@ -18,6 +21,23 @@ export default function Wallet() {
         });
         
         return total.toFixed(2);
+    };
+
+    const handleFunding = (e) => {
+        e.preventDefault();
+        setFundingError('');
+        setFundingSuccess('');
+
+        const fundAmount = parseFloat(amount);
+        if (isNaN(fundAmount) || fundAmount <= 0) {
+            setFundingError('Veuillez entrer un montant valide');
+            return;
+        }
+
+        const updatedBalance = user.walletData.balance + fundAmount;
+        updateUser({ walletData: { ...user.walletData, balance: updatedBalance } });
+        setAmount('');
+        setFundingSuccess('Votre wallet a été approvisionné avec succès !');
     };
 
     return (
@@ -36,7 +56,38 @@ export default function Wallet() {
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                         <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
                             <h2 className="text-lg text-gray-400 mb-2">Solde disponible</h2>
-                            <p className="text-2xl font-bold">${user.walletData.balance.toFixed(2)}</p>
+                            <p className="text-2xl font-bold mb-4">${user.walletData.balance.toFixed(2)}</p>
+                            
+                            <form onSubmit={handleFunding} className="mt-4 space-y-3">
+                                {fundingError && (
+                                    <div className="p-2 bg-red-500/10 border border-red-500 text-red-500 rounded-lg text-sm">
+                                        {fundingError}
+                                    </div>
+                                )}
+                                {fundingSuccess && (
+                                    <div className="p-2 bg-green-500/10 border border-green-500 text-green-500 rounded-lg text-sm">
+                                        {fundingSuccess}
+                                    </div>
+                                )}
+                                <div className="flex gap-2">
+                                    <input
+                                        type="number"
+                                        id="amount"
+                                        value={amount}
+                                        onChange={(e) => setAmount(e.target.value)}
+                                        className="flex-1 bg-zinc-800 border border-zinc-700 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-blue-500"
+                                        placeholder="Montant ($)"
+                                        step="0.01"
+                                        min="0"
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                         
                         <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
