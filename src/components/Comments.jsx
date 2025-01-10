@@ -114,7 +114,7 @@ const Comments = ({ cryptoId }) => {
     };
 
     return (
-        <div className="bg-zinc-900 rounded-xl p-6 w-10/12 mx-auto m-10">
+        <div className="bg-zinc-900 rounded-xl p-6 w-full mx-auto">
             <div>
                 <div className="flex items-center gap-2 mb-4">
                     <MessageCircle className="w-6 h-6 text-yellow-500" />

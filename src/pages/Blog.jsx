@@ -35,12 +35,10 @@ export default function Blog() {
     };
 
     return (
-        <div className="h-full w-full flex flex-col bg-black">
-
+        <div className="min-h-screen bg-black text-white">
             <Navbar navbarConnected />
-
-            <main className="flex-1 w-full">
-                <div className="p-4">
+            <main className="ml-20 h-screen overflow-y-auto">
+                <div className="p-8">
                     <h1 className="text-2xl font-bold mb-4">Commentaires pour {selectedCrypto}</h1>
                     <div className="mb-4">
                         <input
