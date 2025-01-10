@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp, History } from 'lucide-react';
 import Logo from '../assets/cryptop.png';
 import AlertManager from './Alert/AlertManager';
 
@@ -14,6 +14,7 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
             { icon: BarChart2, path: '/market', label: 'Marché' },
             { icon: Wallet, path: '/wallet', label: 'Portefeuille' },
             { icon: ArrowDownUp, path: '/transactions', label: 'Transactions' },
+            { icon: History, path: '/history', label: 'Historique' },
             { icon: User, path: '/profile', label: 'Profil' }
         ];
 

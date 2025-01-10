@@ -45,6 +45,37 @@ export default function Transactions() {
             return;
         }
 
+        const recipientUser = users.find(u => u.accountData.id === selectedUser);
+        const selectedCrypto = cryptos.find(c => c.id === selectedToken);
+        const currentPrice = selectedCrypto ? selectedCrypto.current_price : 0;
+        const totalValue = transferAmount * currentPrice;
+
+        const senderTransferHistory = user.walletData.withdrawData || [];
+        const newSenderTransfer = {
+            type: 'transfer-out',
+            tokenId: selectedToken,
+            tokenSymbol: tokenToTransfer.symbol || selectedCrypto.symbol,
+            tokenImage: tokenToTransfer.image || selectedCrypto.image,
+            quantity: transferAmount,
+            price: currentPrice,
+            total: totalValue,
+            to: recipientUser.accountData.username,
+            timestamp: new Date().toISOString()
+        };
+
+        const recipientTransferHistory = recipientUser.walletData.withdrawData || [];
+        const newRecipientTransfer = {
+            type: 'transfer-in',
+            tokenId: selectedToken,
+            tokenSymbol: tokenToTransfer.symbol || selectedCrypto.symbol,
+            tokenImage: tokenToTransfer.image || selectedCrypto.image,
+            quantity: transferAmount,
+            price: currentPrice,
+            total: totalValue,
+            from: user.accountData.username,
+            timestamp: new Date().toISOString()
+        };
+
         const updatedSenderTokens = user.walletData.tokenData.map(token => {
             if (token.id === selectedToken) {
                 return {
@@ -55,7 +86,6 @@ export default function Transactions() {
             return token;
         });
 
-        const recipientUser = users.find(u => u.accountData.id === selectedUser);
         const recipientTokenIndex = recipientUser.walletData.tokenData.findIndex(t => t.id === selectedToken);
         let updatedRecipientTokens = [...recipientUser.walletData.tokenData];
 
@@ -66,7 +96,7 @@ export default function Transactions() {
             };
         } else {
             updatedRecipientTokens.push({
-                id: selectedToken,
+                ...tokenToTransfer,
                 quantity: transferAmount
             });
         }
@@ -74,7 +104,8 @@ export default function Transactions() {
         updateUser({
             walletData: {
                 ...user.walletData,
-                tokenData: updatedSenderTokens
+                tokenData: updatedSenderTokens,
+                withdrawData: [...senderTransferHistory, newSenderTransfer]
             }
         });
 
@@ -85,7 +116,18 @@ export default function Transactions() {
                     ...u,
                     walletData: {
                         ...u.walletData,
-                        tokenData: updatedRecipientTokens
+                        tokenData: updatedRecipientTokens,
+                        withdrawData: [...recipientTransferHistory, newRecipientTransfer]
+                    }
+                };
+            }
+            if (u.accountData.id === user.accountData.id) {
+                return {
+                    ...u,
+                    walletData: {
+                        ...u.walletData,
+                        tokenData: updatedSenderTokens,
+                        withdrawData: [...senderTransferHistory, newSenderTransfer]
                     }
                 };
             }
