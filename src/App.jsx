@@ -1,5 +1,6 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import React, { useState } from 'react'
+import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from "react-router-dom";
+import SingleCoin from './components/SingleCoin'
 import './App.css'
 import { useAuth, AuthProvider } from './contexts/AuthContext'
 import Landing from './pages/Landing'
@@ -23,9 +24,14 @@ function AppContent() {
   const { user } = useAuth();
 
   return (
-    <div className="h-full w-full flex-1">
+    <div className="h-full w-full flex-1 bg-binance">
       <Routes>
         <Route path="/" element={user ? <Navigate to="/market" /> : <Landing />} />
+        <Route path="/crypto/:cryptoId" 
+        element={
+            <CryptoDetailWrapper />
+        } 
+        />
         <Route
           path="/market"
           element={
@@ -62,6 +68,11 @@ function AppContent() {
     </div>
   );
 }
+
+const CryptoDetailWrapper = () => {
+  const { cryptoId } = useParams();
+  return <SingleCoin cryptoId={cryptoId} />;
+};
 
 function App() {
   return (

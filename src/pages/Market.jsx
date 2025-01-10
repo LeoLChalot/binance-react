@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import CryptoList from '../components/Crypto/CryptoList';
-import Chart from '../components/Chart/Chart';
+import CryptoRow from '../components/CryptoRow';
+import { Navigate, useNavigate } from 'react-router-dom';
+import CryptoList from '../components/CryptoList';
 
 export default function Market() {
     const [cryptos, setCryptos] = useState([])

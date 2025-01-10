@@ -1,28 +1,42 @@
+<<<<<<< HEAD:src/components/Crypto/CryptoList.jsx
 import CryptoRow from './CryptoRow';
 import { useNavigate } from 'react-router-dom';
+=======
+import React from 'react';
+import CryptoRow from './CryptoRow';
+>>>>>>> origin/main:src/components/CryptoList.jsx
 
 export default function CryptoList({ cryptos }) {
-    const navigate = useNavigate();
+    const handleCryptoClick = (crypto) => {
+        console.log('Clicked crypto:', crypto);
+    };
 
     return (
-        < div className="overflow-x-auto" >
-            <table className="min-w-full bg-gray-800 rounded-lg">
-                <thead>
-                    <tr className="w-full bg-gray-900 text-left text-gray-400">
-                        <th className="py-2 px-4">Rank</th>
-                        <th className="py-2 px-4">Price</th>
-                        <th className="py-2 px-4">Market Cap</th>
-                        <th className="py-2 px-4">Volume</th>
-                        <th className="py-2 px-4">Price Change</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {cryptos.map((crypto) => (
-                        <CryptoRow key={crypto.id} crypto={crypto} onClick={() => navigate(`/market/${crypto.id}`)} />
-                    ))}
-                </tbody>
-            </table>
-        </div >
-
-    )
+        <div className="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
+            <div className="overflow-x-auto">
+                <table className="w-full">
+                    <thead>
+                        <tr className="text-left text-sm text-gray-400 border-b border-zinc-800">
+                            <th className="py-4 px-6 font-medium">
+                                <div className="ml-11">Crypto</div>
+                            </th>
+                            <th className="py-4 px-6 font-medium text-right">Prix</th>
+                            <th className="py-4 px-6 font-medium text-right">Capitalisation</th>
+                            <th className="py-4 px-6 font-medium text-right">Volume (24h)</th>
+                            <th className="py-4 px-6 font-medium text-right">Variation (24h)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {cryptos.map((crypto) => (
+                            <CryptoRow 
+                                key={crypto.id} 
+                                crypto={crypto} 
+                                onClick={() => handleCryptoClick(crypto)}
+                            />
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
 }

@@ -56,6 +56,8 @@ export function AuthProvider({ children }) {
                 id: uuidv4(),
                 email: userData.email,
                 password: userData.password,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
                 profilePic: null,
                 createdAt: new Date().toISOString()
             },
@@ -86,28 +88,56 @@ export function AuthProvider({ children }) {
     const updateUser = (updates) => {
         const updatedUser = { ...user };
         
+        // Mise à jour des données du compte
+        if (updates.firstName !== undefined) {
+            updatedUser.accountData.firstName = updates.firstName;
+        }
+        if (updates.lastName !== undefined) {
+            updatedUser.accountData.lastName = updates.lastName;
+        }
+        if (updates.email !== undefined) {
+            updatedUser.accountData.email = updates.email;
+        }
+        if (updates.phone !== undefined) {
+            updatedUser.accountData.phone = updates.phone;
+        }
+        if (updates.address !== undefined) {
+            updatedUser.accountData.address = updates.address;
+        }
+        if (updates.city !== undefined) {
+            updatedUser.accountData.city = updates.city;
+        }
+        if (updates.country !== undefined) {
+            updatedUser.accountData.country = updates.country;
+        }
+        if (updates.notifications !== undefined) {
+            updatedUser.accountData.notifications = updates.notifications;
+        }
         if (updates.profilePic !== undefined) {
             updatedUser.accountData.profilePic = updates.profilePic;
         }
         if (updates.balance !== undefined) {
             updatedUser.walletData.balance = updates.balance;
         }
-        if (updates.tokenData) {
+        if (updates.tokenData !== undefined) {
             updatedUser.walletData.tokenData = updates.tokenData;
         }
-        if (updates.investHistory) {
+        if (updates.investHistory !== undefined) {
             updatedUser.walletData.investHistory = updates.investHistory;
         }
-        if (updates.withdrawHistory) {
+        if (updates.withdrawHistory !== undefined) {
             updatedUser.walletData.withdrawHistory = updates.withdrawHistory;
         }
-        if (updates.beneficiary) {
+        if (updates.beneficiary !== undefined) {
             updatedUser.walletData.beneficiary = updates.beneficiary;
         }
+
         localStorage.setItem('user', JSON.stringify(updatedUser));
         
         const users = getUsers();
-        const updatedUsers = users.map(u => u.accountData.id === updatedUser.accountData.id ? updatedUser : u);
+        const updatedUsers = users.map(u => 
+            u.accountData.id === updatedUser.accountData.id ? updatedUser : u
+        );
         saveUsers(updatedUsers);
         
         setUser(updatedUser);

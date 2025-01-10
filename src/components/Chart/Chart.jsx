@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import LineChart from './CustomLineChart';
+import { useEffect, useState } from "react";
+import LineChart from "./CustomLineChart";
 
 export default function Chart({ cryptoId }) {
   const API_URL = import.meta.env.VITE_API_URL;
@@ -16,6 +16,15 @@ export default function Chart({ cryptoId }) {
       };
       const url = new URL(`${API_URL}/coins/${crypto}/ohlc`);
       Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+  const fetchPriceHistory = async () => {
+    const params = {
+      vs_currency: "usd",
+      days: 30,
+    };
+    const url = new URL(`${API_URL}/coins/${cryptoId}/ohlc`);
+    Object.keys(params).forEach((key) =>
+      url.searchParams.append(key, params[key])
+    );
 
       await fetch(url, {
         headers: {
@@ -28,6 +37,18 @@ export default function Chart({ cryptoId }) {
         })
         .catch(error => console.error('Error:', error))
 
+    await fetch(url, {
+      headers: {
+        "X-x-cg-demo-api-key": API_KEY,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Raw data:", data); // Log data
+        setRawData(data);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
 
       nst processLineData = (data) => {
       const groupedData = {};

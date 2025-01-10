@@ -2,41 +2,60 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function AuthModal({ isOpen, onClose }) {
+    const { login, register } = useAuth();
     const [isLogin, setIsLogin] = useState(true);
+    const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         confirmPassword: '',
-        balance: 0,
-        history: [],
-        profilePic: ''
+        firstName: '',
+        lastName: ''
     });
-    const { login, register } = useAuth();
+    const [error, setError] = useState('');
 
-    const handleChange = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        if (isLogin) {
+            const success = await login(formData);
+            if (success) {
+                onClose();
+            } else {
+                setError('Email ou mot de passe incorrect');
+            }
+        } else {
+            if (currentStep === 1) {
+                if (!formData.email || !formData.password || !formData.confirmPassword) {
+                    setError('Veuillez remplir tous les champs');
+                    return;
+                }
+                if (formData.password !== formData.confirmPassword) {
+                    setError('Les mots de passe ne correspondent pas');
+                    return;
+                }
+                setCurrentStep(2);
+            } else {
+                if (!formData.firstName || !formData.lastName) {
+                    setError('Veuillez remplir tous les champs');
+                    return;
+                }
+                const success = await register(formData);
+                if (success) {
+                    onClose();
+                } else {
+                    setError('Cette adresse email est déjà utilisée');
+                }
+            }
+        }
+    };
+
+    const handleInputChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!isLogin && formData.password !== formData.confirmPassword) {
-            alert("Passwords don't match");
-            return;
-        }
-
-        const success = isLogin 
-            ? await login({ email: formData.email, password: formData.password })
-            : await register({ email: formData.email, password: formData.password, balance: 0, history: [], profilePic: '' });
-        
-        if (success) {
-            onClose();
-        } else {
-            alert(isLogin ? 'Invalid credentials' : 'Email already exists');
-        }
     };
 
     if (!isOpen) return null;
@@ -60,56 +79,122 @@ export default function AuthModal({ isOpen, onClose }) {
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Email"
-                            className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Mot de passe"
-                            className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
-                            required
-                        />
-                    </div>
-                    {!isLogin && (
-                        <div>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                placeholder="Confirmer mot de passe"
-                                className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
-                                required
-                            />
+                {!isLogin && (
+                    <div className="flex justify-between mb-6 relative">
+                        <div className="w-full">
+                            <div className="flex justify-between">
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-green-500' : 'bg-gray-600'}`}>
+                                    1
+                                </div>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-green-500' : 'bg-gray-600'}`}>
+                                    2
+                                </div>
+                            </div>
+                            <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-600 -z-10">
+                                <div 
+                                    className="h-full bg-green-500 transition-all duration-300"
+                                    style={{ width: currentStep === 1 ? '0%' : '100%' }}
+                                />
+                            </div>
                         </div>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {isLogin || currentStep === 1 ? (
+                        <>
+                            <div>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    placeholder="Email"
+                                    className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleInputChange}
+                                    placeholder="Mot de passe"
+                                    className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                                    required
+                                />
+                            </div>
+                            {!isLogin && (
+                                <div>
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
+                                        value={formData.confirmPassword}
+                                        onChange={handleInputChange}
+                                        placeholder="Confirmer le mot de passe"
+                                        className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                                        required
+                                    />
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <div>
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    value={formData.firstName}
+                                    onChange={handleInputChange}
+                                    placeholder="Prénom"
+                                    className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    value={formData.lastName}
+                                    onChange={handleInputChange}
+                                    placeholder="Nom"
+                                    className="w-full bg-zinc-800 border border-zinc-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-green-500 transition-colors"
+                                    required
+                                />
+                            </div>
+                        </>
                     )}
+
+                    {error && (
+                        <p className="text-red-500 text-sm text-center">{error}</p>
+                    )}
+
                     <button
                         type="submit"
                         className="w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors"
                     >
-                        {isLogin ? 'Se connecter' : 'S\'enregistrer'}
+                        {isLogin ? 'Se connecter' : (currentStep === 1 ? 'Suivant' : 'S\'inscrire')}
                     </button>
                 </form>
 
                 <div className="mt-6 text-center">
                     <button
-                        onClick={() => setIsLogin(!isLogin)}
+                        onClick={() => {
+                            setIsLogin(!isLogin);
+                            setCurrentStep(1);
+                            setError('');
+                            setFormData({
+                                email: '',
+                                password: '',
+                                confirmPassword: '',
+                                firstName: '',
+                                lastName: ''
+                            });
+                        }}
                         className="text-green-500 hover:text-green-400 transition-colors"
                     >
-                        {isLogin ? "Pas encore de compte ?" : "Déja un compte ?"}
+                        {isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"}
                     </button>
                 </div>
             </div>
