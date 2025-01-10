@@ -51,45 +51,57 @@ const SingleCoin = ({ cryptoId }) => {
               className="w-16 h-16 rounded-lg shadow-md"
             />
             <div>
-              <h1 className="text-3xl font-bold text-yellow-500">
+              <h1 className="text-3xl font-bold text-white">
                 {cryptoData.name}
               </h1>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-left">
                 {cryptoData.symbol.toUpperCase()}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
-              <div className="flex items-center gap-2 mb-2">
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="col-span-1 bg-gray-800 p-4 rounded-lg shadow-md">
+              <div className="flex items-center gap-2 mb-4">
                 <DollarSign className="w-6 h-6 text-yellow-500" />
                 <span className="text-2xl font-bold text-white">
                   ${cryptoData.market_data.current_price.usd.toLocaleString()}
                 </span>
               </div>
-              <div className={`${priceChangeColor} text-lg`}>
+              <div className={`${priceChangeColor} text-xl`}>
                 {cryptoData.market_data.price_change_percentage_24h > 0 ? '+' : ''}
                 {cryptoData.market_data.price_change_percentage_24h.toFixed(2)}%
               </div>
-              <span className="text-gray-400 text-sm">
+              <span className="text-gray-400 text-md">
                 €{cryptoData.market_data.current_price.eur.toLocaleString()} EUR
               </span>
             </div>
 
-            <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="col-span-2 bg-gray-800 p-4 rounded-lg shadow-md">
+              <div className="flex items-center gap-2 mb-4">
                 <Info className="w-6 h-6 text-yellow-500" />
                 <h2 className="text-lg font-bold text-white">Informations</h2>
               </div>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Classement</span>
-                  <span className="text-white font-semibold">#{cryptoData.market_cap_rank}</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Classement</span>
+                    <span className="text-white font-semibold">#{cryptoData.market_cap_rank}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Volume 24h</span>
+                    <span className="text-white font-semibold">${cryptoData.market_data.total_volume.usd.toLocaleString()}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Volume 24h</span>
-                  <span className="text-white font-semibold">${cryptoData.market_data.total_volume.usd.toLocaleString()}</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Capacité de marché</span>
+                    <span className="text-white font-semibold">${cryptoData.market_data.market_cap.usd.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Offre en circulation</span>
+                    <span className="text-white font-semibold">{cryptoData.market_data.circulating_supply.toLocaleString()}</span>
+                  </div>
                 </div>
               </div>
             </div>
