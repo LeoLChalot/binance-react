@@ -24,7 +24,7 @@ const Comments = ({ cryptoId }) => {
         }
 
         const newCommentObj = {
-            idUser: user.id,
+            idUser: user.accountData.id,
             comment: newComment,
             timestamp: new Date().toISOString(),
             upvote: [],
@@ -51,7 +51,7 @@ const Comments = ({ cryptoId }) => {
 
     const handleDeleteComment = (index) => {
         const commentToDelete = comments[index];
-        if (commentToDelete.idUser !== user.id) {
+        if (commentToDelete.idUser !== user.accountData.id) {
             alert("Vous ne pouvez supprimer que vos propres commentaires.");
             return;
         }
@@ -68,7 +68,7 @@ const Comments = ({ cryptoId }) => {
     const handleVote = (commentIndex, voteType) => {
         const updatedComments = [...comments];
         const comment = updatedComments[commentIndex];
-        const userId = user.id;
+        const userId = user.accountData.id;
 
         comment.upvote = comment.upvote.filter((id) => id !== userId);
         comment.downvote = comment.downvote.filter((id) => id !== userId);
@@ -89,13 +89,13 @@ const Comments = ({ cryptoId }) => {
 
     const getUserNameById = (id) => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
-        const user = users.find((user) => user.id === id);
+        const user = users.find((user) => user.accountData.id === id);
         return user ? user.accountData.email : "Utilisateur inconnu";
     };
 
     const getUserEmailById = (id) => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
-        const user = users.find((user) => user.id === id);
+        const user = users.find((user) => user.accountData.id === id);
         return user ? user.accountData.email : "unknown";
     };
 
@@ -109,8 +109,8 @@ const Comments = ({ cryptoId }) => {
         } else if (filter === "downvoted") {
             filteredComments = commentsForThisCrypto.filter(comment => comment.downvote.length > 0);
         } else if (filter === "mine") {
-            filteredComments = commentsForThisCrypto.filter(comment => comment.idUser === user.id);
-        } else if (filter === "date") { 
+            filteredComments = commentsForThisCrypto.filter(comment => comment.idUser === user.accountData.id);
+        } else if (filter === "date") {
             filteredComments = commentsForThisCrypto.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         }
         setComments(filteredComments);
@@ -143,6 +143,21 @@ const Comments = ({ cryptoId }) => {
                 <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-3 text-left">
                     Commentaires
                 </h3>
+                <div className="mt-6 overflow-y-auto border-t pt-4">
+                    <h3 className="text-lg font-semibold yellow-text">Commentaires :</h3>
+                    <div className="mb-4"></div>
+                    <select
+                        id="filter"
+                        className="mt-1 mx-auto block pl-3 pr-10 py-2 my-4 text-base text-black border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        onChange={(e) => handleFilter(e)}
+                    >
+                        <option value="all">Tous les commentaires</option>
+                        <option value="mine">Mes commentaires</option>
+                        <option value="date">Date de publication<ArrowBigUp /></option>
+                        <option value="upvoted">Commentaires <span className="text-green-500">▲</span></option>
+                        <option value="downvoted">Commentaires <span className="text-red-500">▼</span></option>
+                    </select>
+                </div>
                 {comments.length > 0 ? (
                     comments.map((comment, index) => (
                         <div
@@ -167,24 +182,24 @@ const Comments = ({ cryptoId }) => {
                                 </div>
                                 <div className="flex items-center gap-2 ml-auto">
                                     <button
-                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${comment.upvote.includes(user.id)
-                                                ? "text-green-500 bg-green-500/10"
-                                                : "text-gray-400 hover:text-green-500 hover:bg-green-500/10"
+                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${comment.upvote.includes(user.accountData.id)
+                                            ? "text-green-500 bg-green-500/10"
+                                            : "text-gray-400 hover:text-green-500 hover:bg-green-500/10"
                                             }`}
                                         onClick={() => handleVote(index, "upvote")}
                                     >
                                         ▲ <span>{comment.upvote.length}</span>
                                     </button>
                                     <button
-                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${comment.downvote.includes(user.id)
-                                                ? "text-red-500 bg-red-500/10"
-                                                : "text-gray-400 hover:text-red-500 hover:bg-red-500/10"
+                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${comment.downvote.includes(user.accountData.id)
+                                            ? "text-red-500 bg-red-500/10"
+                                            : "text-gray-400 hover:text-red-500 hover:bg-red-500/10"
                                             }`}
                                         onClick={() => handleVote(index, "downvote")}
                                     >
                                         ▼ <span>{comment.downvote.length}</span>
                                     </button>
-                                    {comment.idUser === user.id && (
+                                    {comment.idUser === user.accountData.id && (
                                         <button
                                             className="text-gray-400 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded-md group-hover:opacity-100 transition-all"
                                             onClick={() => handleDeleteComment(index)}
