@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import { MessageCircle } from "lucide-react";
+import { ArrowBigUp, MessageCircle } from "lucide-react";
 
 const Comments = ({ cryptoId }) => {
     const [newComment, setNewComment] = useState("");
@@ -70,9 +70,11 @@ const Comments = ({ cryptoId }) => {
         const comment = updatedComments[commentIndex];
         const userId = user.id;
 
+        // Retirer l'utilisateur des deux listes de votes (upvote et downvote)
         comment.upvote = comment.upvote.filter((id) => id !== userId);
         comment.downvote = comment.downvote.filter((id) => id !== userId);
 
+        // Ajouter l'utilisateur à la liste correspondante si ce n'est pas un retrait
         if (voteType === "upvote") {
             comment.upvote.push(userId);
         } else if (voteType === "downvote") {
@@ -86,6 +88,8 @@ const Comments = ({ cryptoId }) => {
         setComments(updatedComments);
     };
 
+    // Seems to be useless now
+
     const getUserNameById = (id) => {
         const users = JSON.parse(localStorage.getItem("users")) || [];
         const user = users.find((user) => user.id === id);
@@ -98,8 +102,25 @@ const Comments = ({ cryptoId }) => {
         return user ? user.accountData.email : "unknown";
     };
 
+    const handleFilter = (e) => {
+        const filter = e.target.value;
+        const storedComments = JSON.parse(localStorage.getItem("comments")) || {};
+        const commentsForThisCrypto = storedComments[cryptoId] || [];
+        let filteredComments = commentsForThisCrypto;
+        if (filter === "upvoted") {
+            filteredComments = commentsForThisCrypto.filter(comment => comment.upvote.length > 0);
+        } else if (filter === "downvoted") {
+            filteredComments = commentsForThisCrypto.filter(comment => comment.downvote.length > 0);
+        } else if (filter === "mine") {
+            filteredComments = commentsForThisCrypto.filter(comment => comment.idUser === user.id);
+        } else if (filter === "date") { 
+            filteredComments = commentsForThisCrypto.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+        setComments(filteredComments);
+    };
+
     return (
-        <div className="bg-zinc-900 rounded-xl p-6">
+        <div className="bg-zinc-900 rounded-xl p-6 w-10/12 mx-auto m-10">
             <div>
                 <div className="flex items-center gap-2 mb-4">
                     <MessageCircle className="w-6 h-6 text-yellow-500" />
@@ -149,21 +170,19 @@ const Comments = ({ cryptoId }) => {
                                 </div>
                                 <div className="flex items-center gap-2 ml-auto">
                                     <button
-                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${
-                                            comment.upvote.includes(user.id)
+                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${comment.upvote.includes(user.id)
                                                 ? "text-green-500 bg-green-500/10"
                                                 : "text-gray-400 hover:text-green-500 hover:bg-green-500/10"
-                                        }`}
+                                            }`}
                                         onClick={() => handleVote(index, "upvote")}
                                     >
                                         ▲ <span>{comment.upvote.length}</span>
                                     </button>
                                     <button
-                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${
-                                            comment.downvote.includes(user.id)
+                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${comment.downvote.includes(user.id)
                                                 ? "text-red-500 bg-red-500/10"
                                                 : "text-gray-400 hover:text-red-500 hover:bg-red-500/10"
-                                        }`}
+                                            }`}
                                         onClick={() => handleVote(index, "downvote")}
                                     >
                                         ▼ <span>{comment.downvote.length}</span>

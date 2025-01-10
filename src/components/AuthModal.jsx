@@ -82,13 +82,9 @@ export default function AuthModal({ isOpen, onClose }) {
                 {!isLogin && (
                     <div className="flex justify-between mb-6 relative">
                         <div className="w-full">
-                            <div className="flex justify-between">
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 1 ? 'bg-green-500' : 'bg-gray-600'}`}>
-                                    1
-                                </div>
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= 2 ? 'bg-green-500' : 'bg-gray-600'}`}>
-                                    2
-                                </div>
+                            <div className="flex justify-start">
+                                <div className={`h-0.5 w-full ${currentStep == 1 ? 'bg-green-500' : 'bg-gray-600'}`} />
+                                <div className={`h-0.5 w-full ${currentStep >= 2 ? 'bg-green-500' : 'bg-gray-600'}`} />
                             </div>
                             <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-600 -z-10">
                                 <div 

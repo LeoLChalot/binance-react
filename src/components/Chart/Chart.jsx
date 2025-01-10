@@ -24,7 +24,6 @@ export default function Chart({ cryptoId }) {
         },
       });
       const data = await response.json();
-      console.log("Raw data:", data);
       setRawData(data);
     } catch (error) {
       console.error("Error:", error);

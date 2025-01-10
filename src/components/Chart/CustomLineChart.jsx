@@ -23,8 +23,6 @@ ChartJS.register(
 );
 
 export default function LineChart({ cryptoName, data }) {
-
-  console.log(data)
   const options = {
     responsive: true,
     drawTicks: false,

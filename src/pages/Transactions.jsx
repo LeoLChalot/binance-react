@@ -15,11 +15,9 @@ export default function Transactions() {
 
     useEffect(() => {
         const storedUsers = JSON.parse(localStorage.getItem('users') || '[]');
-        // Filtrer pour exclure l'utilisateur actuel
         setUsers(storedUsers.filter(u => u.accountData.id !== user.accountData.id));
     }, [user.accountData.id]);
 
-    // Obtenir la liste des tokens que possède l'utilisateur
     const userTokens = user.walletData.tokenData.filter(token => {
         const cryptoData = cryptos.find(c => c.id === token.id);
         return cryptoData && token.quantity > 0;
@@ -41,14 +39,43 @@ export default function Transactions() {
             return;
         }
 
-        // Vérifier si l'utilisateur a suffisamment de tokens
         const tokenToTransfer = user.walletData.tokenData.find(t => t.id === selectedToken);
         if (!tokenToTransfer || tokenToTransfer.quantity < transferAmount) {
             setError('Solde insuffisant');
             return;
         }
 
-        // Mettre à jour le solde de l'expéditeur
+        const recipientUser = users.find(u => u.accountData.id === selectedUser);
+        const selectedCrypto = cryptos.find(c => c.id === selectedToken);
+        const currentPrice = selectedCrypto ? selectedCrypto.current_price : 0;
+        const totalValue = transferAmount * currentPrice;
+
+        const senderTransferHistory = user.walletData.withdrawData || [];
+        const newSenderTransfer = {
+            type: 'transfer-out',
+            tokenId: selectedToken,
+            tokenSymbol: tokenToTransfer.symbol || selectedCrypto.symbol,
+            tokenImage: tokenToTransfer.image || selectedCrypto.image,
+            quantity: transferAmount,
+            price: currentPrice,
+            total: totalValue,
+            to: recipientUser.accountData.username,
+            timestamp: new Date().toISOString()
+        };
+
+        const recipientTransferHistory = recipientUser.walletData.withdrawData || [];
+        const newRecipientTransfer = {
+            type: 'transfer-in',
+            tokenId: selectedToken,
+            tokenSymbol: tokenToTransfer.symbol || selectedCrypto.symbol,
+            tokenImage: tokenToTransfer.image || selectedCrypto.image,
+            quantity: transferAmount,
+            price: currentPrice,
+            total: totalValue,
+            from: user.accountData.username,
+            timestamp: new Date().toISOString()
+        };
+
         const updatedSenderTokens = user.walletData.tokenData.map(token => {
             if (token.id === selectedToken) {
                 return {
@@ -59,34 +86,29 @@ export default function Transactions() {
             return token;
         });
 
-        // Trouver le destinataire
-        const recipientUser = users.find(u => u.accountData.id === selectedUser);
         const recipientTokenIndex = recipientUser.walletData.tokenData.findIndex(t => t.id === selectedToken);
         let updatedRecipientTokens = [...recipientUser.walletData.tokenData];
 
         if (recipientTokenIndex !== -1) {
-            // Mettre à jour le token existant
             updatedRecipientTokens[recipientTokenIndex] = {
                 ...updatedRecipientTokens[recipientTokenIndex],
                 quantity: updatedRecipientTokens[recipientTokenIndex].quantity + transferAmount
             };
         } else {
-            // Ajouter un nouveau token
             updatedRecipientTokens.push({
-                id: selectedToken,
+                ...tokenToTransfer,
                 quantity: transferAmount
             });
         }
 
-        // Mettre à jour l'expéditeur
         updateUser({
             walletData: {
                 ...user.walletData,
-                tokenData: updatedSenderTokens
+                tokenData: updatedSenderTokens,
+                withdrawData: [...senderTransferHistory, newSenderTransfer]
             }
         });
 
-        // Mettre à jour le destinataire dans localStorage
         const allUsers = JSON.parse(localStorage.getItem('users') || '[]');
         const updatedUsers = allUsers.map(u => {
             if (u.accountData.id === selectedUser) {
@@ -94,7 +116,18 @@ export default function Transactions() {
                     ...u,
                     walletData: {
                         ...u.walletData,
-                        tokenData: updatedRecipientTokens
+                        tokenData: updatedRecipientTokens,
+                        withdrawData: [...recipientTransferHistory, newRecipientTransfer]
+                    }
+                };
+            }
+            if (u.accountData.id === user.accountData.id) {
+                return {
+                    ...u,
+                    walletData: {
+                        ...u.walletData,
+                        tokenData: updatedSenderTokens,
+                        withdrawData: [...senderTransferHistory, newSenderTransfer]
                     }
                 };
             }
@@ -102,7 +135,6 @@ export default function Transactions() {
         });
         localStorage.setItem('users', JSON.stringify(updatedUsers));
 
-        // Réinitialiser le formulaire
         setSelectedToken('');
         setAmount('');
         setSuccess('Transfert effectué avec succès !');
@@ -112,11 +144,11 @@ export default function Transactions() {
         <div className="min-h-screen bg-black text-white">
             <Navbar navbarConnected />
             <div className="ml-20 h-screen overflow-y-auto">
-                <div className="max-w-2xl mx-auto p-8">
-                    <h1 className="text-3xl font-bold mb-8 text-center">Transactions</h1>
+                <div className="w-full p-8">
+                    <h1 className="text-3xl font-bold mb-8 text-left">Transactions</h1>
 
                     <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
-                        <h2 className="text-xl font-bold mb-6 text-center">Envoyer des cryptos</h2>
+                        <h2 className="text-xl font-bold mb-6 text-left">Envoyer des cryptos</h2>
 
                         <form onSubmit={handleTransfer} className="space-y-4">
                             {error && (
@@ -131,7 +163,7 @@ export default function Transactions() {
                             )}
 
                             <div>
-                                <label htmlFor="user" className="block text-sm font-medium text-gray-400 mb-2">
+                                <label htmlFor="user" className="block text-sm text-left font-medium text-gray-400 mb-2">
                                     Destinataire
                                 </label>
                                 <div className="relative">
@@ -171,7 +203,7 @@ export default function Transactions() {
                             </div>
 
                             <div>
-                                <label htmlFor="token" className="block text-sm font-medium text-gray-400 mb-2">
+                                <label htmlFor="token" className="block text-sm text-left font-medium text-gray-400 mb-2">
                                     Crypto à envoyer
                                 </label>
                                 <div className="relative">
@@ -213,7 +245,7 @@ export default function Transactions() {
                             </div>
 
                             <div>
-                                <label htmlFor="amount" className="block text-sm font-medium text-gray-400 mb-2">
+                                <label htmlFor="amount" className="block text-sm text-left font-medium text-gray-400 mb-2">
                                     Montant
                                 </label>
                                 <div className="relative">

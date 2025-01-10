@@ -10,7 +10,9 @@ import Market from './pages/Market'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
 import Transactions from './pages/Transactions'
+import History from './pages/History'
 import CryptoDetail from './pages/CryptoDetail'
+import Blog from './pages/Blog';
 import PriceAlert from './components/Notification/PriceAlert'
 
 function PrivateRoute({ children }) {
@@ -29,6 +31,7 @@ function AppContent() {
 
   return (
     <div className="h-full w-full flex-1 bg-binance">
+      <PriceAlert />
       <Routes>
         <Route path="/" element={user ? <Navigate to="/market" /> : <Landing />} />
         <Route
@@ -56,6 +59,14 @@ function AppContent() {
           }
         />
         <Route
+          path="/history"
+          element={
+            <PrivateRoute>
+              <History />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/profile"
           element={
             <PrivateRoute>
@@ -71,7 +82,24 @@ function AppContent() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/crypto/:id"
+          element={
+            <PrivateRoute>
+              <CryptoDetail />
+            </PrivateRoute>
+          }
+         />
+        <Route
+          path="/blog"
+          element={
+            <PrivateRoute>
+              <Blog />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+      
     </div>
   );
 }
@@ -84,7 +112,6 @@ function App() {
           <CryptoProvider>
             <div className="min-h-screen bg-black text-white">
               <AppContent />
-              <PriceAlert />
             </div>
           </CryptoProvider>
         </AlertProvider>
