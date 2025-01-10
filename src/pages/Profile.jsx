@@ -79,7 +79,6 @@ export default function Profile() {
         }
 
         try {
-            // Mettre à jour toutes les informations de l'utilisateur
             await updateUser({
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -132,7 +131,8 @@ export default function Profile() {
                             <div className="relative group">
                                 <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-zinc-700">
                                     <img 
-                                        src={user.accountData.profilePic || "https://api.dicebear.com/7.x/avataaars/svg?seed=" + user.accountData.email}
+                                        src={user.accountData.profilePic || 
+                                            `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user.accountData.email)}`}
                                         alt="Profile" 
                                         className="w-full h-full object-cover"
                                     />

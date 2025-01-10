@@ -33,13 +33,11 @@ export default function Chart({ cryptoId }) {
   const processLineData = (data) => {
     const groupedData = {};
     data.forEach(([timestamp, close]) => {
-      const date = new Date(timestamp).toISOString().split("T")[0]; // Regrouper par jour
+      const date = new Date(timestamp).toISOString().split("T")[0]; 
       if (!groupedData[date]) {
-        groupedData[date] = close; // Utiliser le prix de clôture par jour
+        groupedData[date] = close; 
       }
     });
-    
-    // Convertir les données en tableau
     return Object.entries(groupedData).map(([date, close]) => ({
       date,
       close,

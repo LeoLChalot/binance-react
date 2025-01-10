@@ -4,6 +4,7 @@ import SingleCoin from './components/SingleCoin'
 import './App.css'
 import { useAuth, AuthProvider } from './contexts/AuthContext'
 import { CryptoProvider } from './contexts/CryptoContext';
+import { AlertProvider } from './contexts/AlertContext';
 import Landing from './pages/Landing'
 import Market from './pages/Market'
 import Wallet from './pages/Wallet'
@@ -11,6 +12,7 @@ import Profile from './pages/Profile'
 import Transactions from './pages/Transactions'
 import CryptoDetail from './pages/CryptoDetail'
 import Blog from './pages/Blog';
+import PriceAlert from './components/Notification/PriceAlert'
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -88,11 +90,14 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <CryptoProvider>
-          <div className="h-full w-full flex flex-col">
-            <AppContent />
-          </div>
-        </CryptoProvider>
+        <AlertProvider>
+          <CryptoProvider>
+            <div className="min-h-screen bg-black text-white">
+              <AppContent />
+              <PriceAlert />
+            </div>
+          </CryptoProvider>
+        </AlertProvider>
       </AuthProvider>
     </Router>
   );
