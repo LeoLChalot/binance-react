@@ -112,25 +112,30 @@ const Comments = ({ cryptoId }) => {
     };
 
     return (
-        <div className="flex-3 flex flex-col">
+        <div className="bg-zinc-900 rounded-xl p-6">
             <div>
-                <div className="flex items-center gap-2 mb-2">
-                    <MessageCircle className="w-5 h-5 text-white" />
-                    <h2 className="text-lg font-bold yellow-text">Partager votre avis !</h2>
+                <div className="flex items-center gap-2 mb-4">
+                    <MessageCircle className="w-6 h-6 text-yellow-500" />
+                    <h2 className="text-xl font-bold text-white">Partager votre avis !</h2>
                 </div>
                 <textarea
+
                     className="w-full p-2 border text-black rounded-lg focus:ring focus:ring-purple-300"
+
                     placeholder="Ajoutez vos commentaires sur cette crypto..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
+                    rows="3"
                 />
                 <button
-                    className="mt-2 px-4 py-2 bg-yellow text-white rounded-lg"
+                    className="mt-3 px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center gap-2 ml-auto"
                     onClick={handleCommentSubmit}
                 >
+                    <MessageCircle size={16} />
                     Ajouter
                 </button>
             </div>
+
             <div className="mt-6 overflow-y-auto border-t pt-4">
                 <h3 className="text-lg font-semibold yellow-text">Commentaires :</h3>
                 <div className="mb-4"></div>
@@ -185,6 +190,7 @@ const Comments = ({ cryptoId }) => {
             ) : (
                 <p className="text-gray-500">Aucun commentaire pour cette crypto.</p>
             )}
+
         </div>
     );
 };
