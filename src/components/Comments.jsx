@@ -95,54 +95,78 @@ const Comments = ({ cryptoId }) => {
     };
 
     return (
-        <div className="flex-3 flex flex-col">
+        <div className="bg-zinc-900 rounded-xl p-6">
             <div>
-                <div className="flex items-center gap-2 mb-2">
-                    <MessageCircle className="w-5 h-5 text-white" />
-                    <h2 className="text-lg font-bold yellow-text">Partager votre avis !</h2>
+                <div className="flex items-center gap-2 mb-4">
+                    <MessageCircle className="w-6 h-6 text-yellow-500" />
+                    <h2 className="text-xl font-bold text-white">Partager votre avis !</h2>
                 </div>
                 <textarea
-                    className="w-full p-2 border rounded-lg focus:ring focus:ring-purple-300"
+                    className="w-full p-4 bg-black my-4 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition-colors resize-none"
                     placeholder="Ajoutez vos commentaires sur cette crypto..."
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
+                    rows="3"
                 />
                 <button
-                    className="mt-2 px-4 py-2 bg-yellow text-white rounded-lg"
+                    className="mt-3 px-6 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors font-medium text-sm flex items-center gap-2 ml-auto"
                     onClick={handleCommentSubmit}
                 >
+                    <MessageCircle size={16} />
                     Ajouter
                 </button>
             </div>
 
-            <div className="mt-6 flex-1 overflow-y-auto border-t pt-4">
-                <h3 className="text-lg font-semibold yellow-text">Commentaires :</h3>
+            <div className="mt-8 space-y-4">
+                <h3 className="text-lg font-semibold text-white border-b border-gray-700 pb-3 text-left">
+                    Commentaires
+                </h3>
                 {comments.length > 0 ? (
                     comments.map((comment, index) => (
                         <div
                             key={index}
-                            className="p-4 border rounded-lg mb-2 bg-gray-50"
+                            className="bg-gray-700/35 rounded-lg p-4 border border-gray-600 group"
                         >
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="text-sm text-gray-500">
-                                    {new Date(comment.timestamp).toLocaleString()} - {getUserNameById(comment.idUser)}
-                                </span>
-                                <div className="flex items-center gap-2">
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex items-center gap-3">
+                                    <img
+                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.idUser}`}
+                                        alt="Avatar"
+                                        className="w-8 h-8 rounded-full bg-gray-600"
+                                    />
+                                    <div>
+                                        <h4 className="text-white font-medium">
+                                            {getUserNameById(comment.idUser)}
+                                        </h4>
+                                        <span className="text-sm text-gray-400">
+                                            {new Date(comment.timestamp).toLocaleString()}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2 ml-auto">
                                     <button
-                                        className="text-green-500"
+                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${
+                                            comment.upvote.includes(user.id)
+                                                ? "text-green-500 bg-green-500/10"
+                                                : "text-gray-400 hover:text-green-500 hover:bg-green-500/10"
+                                        }`}
                                         onClick={() => handleVote(index, "upvote")}
                                     >
-                                        ▲ {comment.upvote.length}
+                                        ▲ <span>{comment.upvote.length}</span>
                                     </button>
                                     <button
-                                        className="text-red-500"
+                                        className={`flex items-center gap-1 px-2 py-1 rounded-md transition-colors ${
+                                            comment.downvote.includes(user.id)
+                                                ? "text-red-500 bg-red-500/10"
+                                                : "text-gray-400 hover:text-red-500 hover:bg-red-500/10"
+                                        }`}
                                         onClick={() => handleVote(index, "downvote")}
                                     >
-                                        ▼ {comment.downvote.length}
+                                        ▼ <span>{comment.downvote.length}</span>
                                     </button>
                                     {comment.idUser === user.id && (
                                         <button
-                                            className="text-gray-500"
+                                            className="text-gray-400 hover:text-red-500 hover:bg-red-500/10 p-1.5 rounded-md group-hover:opacity-100 transition-all"
                                             onClick={() => handleDeleteComment(index)}
                                         >
                                             Supprimer
@@ -150,11 +174,14 @@ const Comments = ({ cryptoId }) => {
                                     )}
                                 </div>
                             </div>
-                            <p className="text-gray-700">{comment.comment}</p>
+                            <p className="text-gray-300 ml-11 text-left">{comment.comment}</p>
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-500">Aucun commentaire pour cette crypto.</p>
+                    <div className="text-center py-8">
+                        <p className="text-gray-400">Aucun commentaire pour cette crypto.</p>
+                        <p className="text-sm text-gray-500 mt-1">Soyez le premier à donner votre avis !</p>
+                    </div>
                 )}
             </div>
         </div>

@@ -45,7 +45,7 @@ export default function Wallet() {
             <Navbar navbarConnected />
             <div className="ml-20 h-screen overflow-y-auto">
                 <div className="p-8">
-                    <h1 className="text-3xl font-bold mb-8">Portefeuille</h1>
+                    <h1 className="text-3xl font-bold mb-8 text-left">Portefeuille</h1>
 
                     {error && (
                         <div className="mb-6 p-4 bg-red-500/10 border border-red-500 text-red-500 rounded-lg">
