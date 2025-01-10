@@ -6,7 +6,7 @@ export default function CryptoRow({ crypto, onClick }) {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: 0
-        }).format(price).replace(/,/, ' ');
+        }).format(price);
     };
 
     const formatLargeNumber = (number) => {
