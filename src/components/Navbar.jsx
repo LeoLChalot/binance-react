@@ -63,7 +63,7 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
         );
     } else {
         return (
-            <nav className="border-b border-zinc-800 w-full">
+            <nav className="border-b border-zinc-800 w-full bg-zinc-900">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <div className="text-white text-xl font-bold flex items-center gap-x-2">
