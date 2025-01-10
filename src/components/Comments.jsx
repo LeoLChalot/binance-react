@@ -88,11 +88,11 @@ const Comments = ({ cryptoId }) => {
         setComments(updatedComments);
     };
 
-    const getUserNameById = (id) => {
-        const users = JSON.parse(localStorage.getItem("users")) || [];
-        const user = users.find((user) => user.id === id);
-        return user ? user.email : "Utilisateur inconnu";
-    };
+    // Seems to be useless now
+    
+    // const getUserNameById = (id) => {
+    //     return user ? user.accountData.email : "Utilisateur inconnu";
+    // };
 
     const handleFilter = (e) => {
         const filter = e.target.value;
@@ -154,7 +154,7 @@ const Comments = ({ cryptoId }) => {
                     >
                         <div className="flex justify-between items-center mb-2">
                             <span className="text-sm text-gray-500">
-                                {new Date(comment.timestamp).toLocaleString()} - {getUserNameById(comment.idUser)}
+                                {new Date(comment.timestamp).toLocaleString()} - {user ? user.accountData.email : "Utilisateur inconnu"}
                             </span>
                             <div className="flex items-center gap-2">
                                 <button

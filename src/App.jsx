@@ -10,6 +10,7 @@ import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
 import Transactions from './pages/Transactions'
 import CryptoDetail from './pages/CryptoDetail'
+import Blog from './pages/Blog';
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -69,7 +70,16 @@ function AppContent() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/blog"
+          element={
+            <PrivateRoute>
+              <Blog />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+      
     </div>
   );
 }

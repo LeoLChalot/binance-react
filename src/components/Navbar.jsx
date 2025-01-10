@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp, Newspaper } from 'lucide-react';
 import Logo from '../assets/cryptop.png';
 
 export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
@@ -13,7 +13,8 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
             { icon: BarChart2, path: '/market', label: 'Marché' },
             { icon: Wallet, path: '/wallet', label: 'Portefeuille' },
             { icon: ArrowDownUp, path: '/transactions', label: 'Transactions' },
-            { icon: User, path: '/profile', label: 'Profil' }
+            { icon: User, path: '/profile', label: 'Profil' },
+            { icon: Newspaper, path: '/blog', label: 'Blog' },
         ];
 
         const isMarketActive = location.pathname.startsWith('/market');
