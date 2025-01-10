@@ -70,11 +70,9 @@ const Comments = ({ cryptoId }) => {
         const comment = updatedComments[commentIndex];
         const userId = user.id;
 
-        // Retirer l'utilisateur des deux listes de votes (upvote et downvote)
         comment.upvote = comment.upvote.filter((id) => id !== userId);
         comment.downvote = comment.downvote.filter((id) => id !== userId);
 
-        // Ajouter l'utilisateur à la liste correspondante si ce n'est pas un retrait
         if (voteType === "upvote") {
             comment.upvote.push(userId);
         } else if (voteType === "downvote") {
@@ -88,12 +86,17 @@ const Comments = ({ cryptoId }) => {
         setComments(updatedComments);
     };
 
-    // Seems to be useless now
 
     const getUserNameById = (id) => {
-        const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-        const user = storedUsers.find((user) => user.id === id);
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find((user) => user.id === id);
         return user ? user.accountData.email : "Utilisateur inconnu";
+    };
+
+    const getUserEmailById = (id) => {
+        const users = JSON.parse(localStorage.getItem("users")) || [];
+        const user = users.find((user) => user.id === id);
+        return user ? user.accountData.email : "unknown";
     };
 
     const handleFilter = (e) => {
@@ -107,14 +110,14 @@ const Comments = ({ cryptoId }) => {
             filteredComments = commentsForThisCrypto.filter(comment => comment.downvote.length > 0);
         } else if (filter === "mine") {
             filteredComments = commentsForThisCrypto.filter(comment => comment.idUser === user.id);
-        } else if (filter === "date") { // Ajout de cette condition
+        } else if (filter === "date") { 
             filteredComments = commentsForThisCrypto.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
         }
         setComments(filteredComments);
     };
 
     return (
-        <div className="bg-zinc-900 rounded-xl p-6 w-10/12 mx-auto m-10">
+        <div className="bg-zinc-900 rounded-xl p-6 w-full mx-auto">
             <div>
                 <div className="flex items-center gap-2 mb-4">
                     <MessageCircle className="w-6 h-6 text-yellow-500" />
@@ -164,7 +167,7 @@ const Comments = ({ cryptoId }) => {
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex items-center gap-3">
                                     <img
-                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.idUser}`}
+                                        src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(getUserEmailById(comment.idUser))}`}
                                         alt="Avatar"
                                         className="w-8 h-8 rounded-full bg-gray-600"
                                     />
