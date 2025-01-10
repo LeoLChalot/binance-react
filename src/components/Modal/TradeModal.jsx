@@ -196,8 +196,7 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                 <h2 className="text-xl font-bold text-white mb-6">{getTitle()}</h2>
 
                 {type !== 'alert' && (
-                    <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/50 rounded-lg flex items-start gap-3">
-                        <AlertTriangle className="text-yellow-500 w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <div className="p-4 bg-yellow-500/10 border border-yellow-500/50 rounded-lg flex items-center justify-center gap-3">
                         <div className="text-sm text-yellow-200">
                             <p className="font-medium mb-1">Prix actuel: ${cryptoData.market_data.current_price.usd}</p>
                             {type === 'buy' && (
@@ -244,8 +243,7 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                                 Inférieur ou égal
                             </button>
                         </div>
-                        <div className="mb-4 p-4 bg-yellow-500/10 border border-yellow-500/50 rounded-lg flex items-start gap-3">
-                            <AlertTriangle className="text-yellow-500 w-5 h-5 flex-shrink-0 mt-0.5" />
+                        <div className="p-4 bg-yellow-500/10 border border-yellow-500/50 rounded-lg flex items-center justify-center gap-3">
                             <div className="text-sm text-yellow-200">
                                 <p className="font-medium mb-1">Prix actuel: ${cryptoData.market_data.current_price.usd}</p>
                                 <p>Vous serez notifié quand le prix sera {alertType === 'above' ? 'supérieur' : 'inférieur'} au prix cible</p>
@@ -261,7 +259,7 @@ const TradeModal = ({ isOpen, onClose, type, cryptoData }) => {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             placeholder={getPlaceholder()}
-                            className="w-full p-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition-colors"
+                            className="w-full mt-4 p-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500 transition-colors"
                         />
                     </div>
 
