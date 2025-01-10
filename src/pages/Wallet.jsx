@@ -68,26 +68,28 @@ export default function Wallet() {
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                         <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
                             <h2 className="text-lg text-gray-400 mb-2">Solde disponible</h2>
-                            <p className="text-2xl font-bold">${user.walletData.balance.toFixed(2)}</p>
+                            <p className="text-2xl font-bold">{user.walletData.balance.toFixed(2)}€</p>
                         </div>
                         
                         <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
                             <h2 className="text-lg text-gray-400 mb-2">Valeur des cryptos</h2>
                             <p className="text-2xl font-bold">
-                                ${loading ? (
+                                {loading ? (
                                     <span className="text-gray-500">Chargement...</span>
                                 ) : (
                                     (calculateTotalValue() - user.walletData.balance).toFixed(2)
-                                )}
+                                )}€
                             </p>
                         </div>
 
                         <div className="bg-zinc-900 rounded-xl p-6 border border-zinc-800">
                             <h2 className="text-lg text-gray-400 mb-2">Valeur totale</h2>
                             <p className="text-2xl font-bold text-green-500">
-                                ${loading ? (
+                                {loading ? (
                                     <span className="text-gray-500">Chargement...</span>
-                                ) : calculateTotalValue()}
+                                ) : (
+                                    `${calculateTotalValue()}€`
+                                )}
                             </p>
                         </div>
                     </div>
@@ -140,14 +142,14 @@ export default function Wallet() {
                                                 </td>
                                                 <td className="p-4">
                                                     {cryptoPrices[token.id] ? (
-                                                        `$${cryptoPrices[token.id].usd.toFixed(2)}`
+                                                        `${cryptoPrices[token.id].usd.toFixed(2)}€`
                                                     ) : (
                                                         <span className="text-gray-500">-</span>
                                                     )}
                                                 </td>
                                                 <td className="p-4">
                                                     {cryptoPrices[token.id] ? (
-                                                        `$${(token.quantity * cryptoPrices[token.id].usd).toFixed(2)}`
+                                                        `${(token.quantity * cryptoPrices[token.id].usd).toFixed(2)}€`
                                                     ) : (
                                                         <span className="text-gray-500">-</span>
                                                     )}
