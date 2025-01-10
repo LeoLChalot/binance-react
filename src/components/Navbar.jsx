@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp, Search } from 'lucide-react';
+import { Home, BarChart2, Wallet, User, LogOut, ArrowDownUp } from 'lucide-react';
 import Logo from '../assets/cryptop.png';
 
 export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
@@ -11,7 +11,6 @@ export default function Navbar({ setIsModalOpen, navbarConnected = false }) {
     if (navbarConnected) {
         const menuItems = [
             { icon: BarChart2, path: '/market', label: 'Marché' },
-            { icon: Search, label: 'Rechercher' },
             { icon: Wallet, path: '/wallet', label: 'Portefeuille' },
             { icon: ArrowDownUp, path: '/transactions', label: 'Transactions' },
             { icon: User, path: '/profile', label: 'Profil' }

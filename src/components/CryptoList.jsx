@@ -1,11 +1,7 @@
 import React from 'react';
 import CryptoRow from './CryptoRow';
 
-export default function CryptoList({ cryptos }) {
-    const handleCryptoClick = (crypto) => {
-        console.log('Clicked crypto:', crypto);
-    };
-
+export default function CryptoList({ cryptos, onCryptoClick }) {
     return (
         <div className="bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800">
             <div className="overflow-x-auto">
@@ -26,7 +22,7 @@ export default function CryptoList({ cryptos }) {
                             <CryptoRow 
                                 key={crypto.id} 
                                 crypto={crypto} 
-                                onClick={() => handleCryptoClick(crypto)}
+                                onClick={() => onCryptoClick(crypto)}
                             />
                         ))}
                     </tbody>
