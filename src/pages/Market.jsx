@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useCrypto } from '../contexts/CryptoContext';
 import Navbar from '../components/Navbar';
-import CryptoRow from '../components/CryptoRow';
-import { Navigate, useNavigate } from 'react-router-dom';
-import CryptoList from '../components/CryptoList';
+import CryptoRow from '../components/Crypto/CryptoRow';
+import CryptoList from '../components/Crypto/CryptoList';
 
 export default function Market() {
     const { user } = useAuth();

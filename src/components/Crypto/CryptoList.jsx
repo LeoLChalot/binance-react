@@ -1,10 +1,5 @@
-<<<<<<< HEAD:src/components/Crypto/CryptoList.jsx
-import CryptoRow from './CryptoRow';
-import { useNavigate } from 'react-router-dom';
-=======
 import React from 'react';
 import CryptoRow from './CryptoRow';
->>>>>>> origin/main:src/components/CryptoList.jsx
 
 export default function CryptoList({ cryptos }) {
     const handleCryptoClick = (crypto) => {
