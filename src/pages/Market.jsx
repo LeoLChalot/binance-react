@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import Navbar from '../components/Navbar';
-import CryptoRow from '../components/CryptoRow';
 import { Navigate, useNavigate } from 'react-router-dom';
-import CryptoList from '../components/CryptoList';
+import CryptoList from '../components/Crypto/CryptoList';
 
 export default function Market() {
     const { user } = useAuth();
@@ -37,7 +36,7 @@ export default function Market() {
     }
 
     useEffect(() => {
-        fetchCryptos();
+        // fetchCryptos();
     }, [])
 
     return (
