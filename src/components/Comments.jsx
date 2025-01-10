@@ -70,11 +70,9 @@ const Comments = ({ cryptoId }) => {
         const comment = updatedComments[commentIndex];
         const userId = user.id;
 
-        // Retirer l'utilisateur des deux listes de votes (upvote et downvote)
         comment.upvote = comment.upvote.filter((id) => id !== userId);
         comment.downvote = comment.downvote.filter((id) => id !== userId);
 
-        // Ajouter l'utilisateur à la liste correspondante si ce n'est pas un retrait
         if (voteType === "upvote") {
             comment.upvote.push(userId);
         } else if (voteType === "downvote") {
@@ -88,7 +86,6 @@ const Comments = ({ cryptoId }) => {
         setComments(updatedComments);
     };
 
-    // Seems to be useless now
 
     const getUserNameById = (id) => {
         const users = JSON.parse(localStorage.getItem("users")) || [];

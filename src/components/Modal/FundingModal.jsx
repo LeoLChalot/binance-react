@@ -28,11 +28,21 @@ export default function FundingModal({ isOpen, onClose, type = 'deposit' }) {
             ? user.walletData.balance + fundingAmount
             : user.walletData.balance - fundingAmount;
 
+        const transaction = {
+            type: type === 'deposit' ? 'deposit' : 'withdraw',
+            amount: fundingAmount,
+            timestamp: new Date().toISOString(),
+        };
+
         updateUser({
             ...user,
             walletData: {
                 ...user.walletData,
-                balance: updatedBalance
+                balance: updatedBalance,
+                fundingHistory: [
+                    ...(user.walletData.fundingHistory || []),
+                    transaction
+                ]
             }
         });
 

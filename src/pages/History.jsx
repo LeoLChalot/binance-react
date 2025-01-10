@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCrypto } from '../contexts/CryptoContext';
 import Navbar from '../components/Navbar';
-import { Calendar, ArrowUpRight, ArrowDownRight, RefreshCw } from 'lucide-react';
+import { Calendar, ArrowUpRight, ArrowDownRight, RefreshCw, Plus, Minus } from 'lucide-react';
 
 export default function History() {
     const { user } = useAuth();
-    const { cryptos } = useCrypto();// 
+    const { cryptos } = useCrypto();
     const [selectedType, setSelectedType] = useState('all');
 
     if (!user?.walletData) {
@@ -56,6 +56,10 @@ export default function History() {
                 return <ArrowDownRight className="w-5 h-5 text-blue-500" />;
             case 'transfer-out':
                 return <ArrowUpRight className="w-5 h-5 text-orange-500" />;
+            case 'deposit':
+                return <Plus className="w-5 h-5 text-emerald-500" />;
+            case 'withdraw':
+                return <Minus className="w-5 h-5 text-purple-500" />;
             default:
                 return <RefreshCw className="w-5 h-5 text-gray-500" />;
         }
@@ -71,19 +75,31 @@ export default function History() {
                 return 'Réception';
             case 'transfer-out':
                 return 'Envoi';
+            case 'deposit':
+                return 'Dépôt';
+            case 'withdraw':
+                return 'Retrait';
             default:
                 return 'Transaction';
         }
     };
 
-    const transactions = [
+    const allTransactions = [
         ...(user.walletData.investHistory || []),
-        ...(user.walletData.withdrawData || [])
+        ...(user.walletData.withdrawData || []),
+        ...(user.walletData.fundingHistory || []).map(t => ({
+            ...t,
+            tokenId: 'usd',
+            tokenSymbol: 'USD',
+            quantity: t.amount,
+            price: 1,
+            total: t.amount
+        }))
     ].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
     const filteredTransactions = selectedType === 'all' 
-        ? transactions 
-        : transactions.filter(t => t.type === selectedType);
+        ? allTransactions 
+        : allTransactions.filter(t => t.type === selectedType);
 
     return (
         <div className="min-h-screen bg-black text-white">
@@ -102,6 +118,26 @@ export default function History() {
                                 }`}
                             >
                                 Tout
+                            </button>
+                            <button
+                                onClick={() => setSelectedType('deposit')}
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                    selectedType === 'deposit'
+                                        ? 'bg-emerald-600 text-white'
+                                        : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
+                                }`}
+                            >
+                                Dépôts
+                            </button>
+                            <button
+                                onClick={() => setSelectedType('withdraw')}
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                                    selectedType === 'withdraw'
+                                        ? 'bg-purple-600 text-white'
+                                        : 'bg-zinc-800 text-gray-400 hover:bg-zinc-700'
+                                }`}
+                            >
+                                Retraits
                             </button>
                             <button
                                 onClick={() => setSelectedType('buy')}
@@ -166,7 +202,7 @@ export default function History() {
                                 </thead>
                                 <tbody>
                                     {filteredTransactions.map((transaction, index) => {
-                                        const crypto = cryptos.find(c => c.id === transaction.tokenId);
+                                        const crypto = transaction.tokenId === 'usd' ? null : cryptos.find(c => c.id === transaction.tokenId);
                                         return (
                                             <tr 
                                                 key={index}
@@ -188,30 +224,34 @@ export default function History() {
                                                 </td>
                                                 <td className="p-4">
                                                     <div className="flex items-center gap-2">
-                                                        <img 
-                                                            src={crypto?.image || transaction.tokenImage} 
-                                                            alt={transaction.tokenSymbol}
-                                                            className="w-6 h-6 rounded-full"
-                                                        />
+                                                        {transaction.tokenId === 'usd' ? (
+                                                            <div className="w-6 h-6 rounded-full bg-green-500/10 flex items-center justify-center">
+                                                                <span className="text-green-500 text-xs">$</span>
+                                                            </div>
+                                                        ) : (
+                                                            <img 
+                                                                src={crypto?.image || transaction.tokenImage} 
+                                                                alt={transaction.tokenSymbol}
+                                                                className="w-6 h-6 rounded-full"
+                                                            />
+                                                        )}
                                                         <span className="font-medium">
-                                                            {transaction.tokenSymbol.toUpperCase()}
+                                                            {transaction.tokenSymbol}
                                                         </span>
                                                     </div>
                                                 </td>
+                                                <td className="p-4">
+                                                    {transaction.quantity?.toFixed(6)}
+                                                </td>
+                                                <td className="p-4">
+                                                    {formatPrice(transaction.price || 1)}
+                                                </td>
                                                 <td className="p-4 font-medium">
-                                                    {transaction.quantity.toFixed(8)}
+                                                    {formatPrice(transaction.total || transaction.amount)}
                                                 </td>
-                                                <td className="p-4 text-gray-400">
-                                                    {formatPrice(transaction.price)}
-                                                </td>
-                                                <td className="p-4 font-medium">
-                                                    {formatPrice(transaction.total)}
-                                                </td>
-                                                {transaction.type.includes('transfer') && (
+                                                {selectedType.includes('transfer') && (
                                                     <td className="p-4 text-gray-400">
-                                                        {transaction.type === 'transfer-in' 
-                                                            ? transaction.from 
-                                                            : transaction.to}
+                                                        {selectedType === 'transfer-in' ? transaction.from : transaction.to}
                                                     </td>
                                                 )}
                                             </tr>
