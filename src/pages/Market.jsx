@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
-import { Navigate, useNavigate } from 'react-router-dom';
 import CryptoList from '../components/Crypto/CryptoList';
+import Chart from '../components/Chart/Chart';
 
 export default function Market() {
-    const { user } = useAuth();
-    const navigate = useNavigate();
     const [cryptos, setCryptos] = useState([])
-    const [crypto, setCrypto] = useState({})
 
     const API_URL = import.meta.env.VITE_API_URL;
     const API_KEY = import.meta.env.VITE_API_KEY;
-
 
     const fetchCryptos = async () => {
         const params = {
@@ -36,7 +31,7 @@ export default function Market() {
     }
 
     useEffect(() => {
-        // fetchCryptos();
+        fetchCryptos();
     }, [])
 
     return (
