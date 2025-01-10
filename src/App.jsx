@@ -11,6 +11,7 @@ import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
 import Transactions from './pages/Transactions'
 import CryptoDetail from './pages/CryptoDetail'
+import Blog from './pages/Blog';
 import PriceAlert from './components/Notification/PriceAlert'
 
 function PrivateRoute({ children }) {
@@ -71,7 +72,16 @@ function AppContent() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/blog"
+          element={
+            <PrivateRoute>
+              <Blog />
+            </PrivateRoute>
+          }
+        />
       </Routes>
+      
     </div>
   );
 }
