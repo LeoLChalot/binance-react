@@ -4,10 +4,10 @@ import SingleCoin from './components/SingleCoin'
 import './App.css'
 import { useAuth, AuthProvider } from './contexts/AuthContext'
 import Landing from './pages/Landing'
-import Dashboard from './pages/Dashboard'
 import Market from './pages/Market'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
+import Transactions from './pages/Transactions'
 
 function PrivateRoute({ children }) {
   const { user, setShowAuth } = useAuth();
@@ -26,15 +26,7 @@ function AppContent() {
   return (
     <div className="h-full w-full flex-1 bg-binance">
       <Routes>
-        <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Landing />} />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/" element={user ? <Navigate to="/market" /> : <Landing />} />
         <Route path="/crypto/:cryptoId" 
         element={
             <CryptoDetailWrapper />
@@ -61,6 +53,14 @@ function AppContent() {
           element={
             <PrivateRoute>
               <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <PrivateRoute>
+              <Transactions />
             </PrivateRoute>
           }
         />
