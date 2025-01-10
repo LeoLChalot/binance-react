@@ -116,31 +116,22 @@ export function AuthProvider({ children }) {
         if (updates.profilePic !== undefined) {
             updatedUser.accountData.profilePic = updates.profilePic;
         }
-        if (updates.balance !== undefined) {
-            updatedUser.walletData.balance = updates.balance;
+        if (updates.walletData !== undefined) {
+            updatedUser.walletData = {
+                ...updatedUser.walletData,
+                ...updates.walletData
+            };
         }
-        if (updates.tokenData !== undefined) {
-            updatedUser.walletData.tokenData = updates.tokenData;
-        }
-        if (updates.investHistory !== undefined) {
-            updatedUser.walletData.investHistory = updates.investHistory;
-        }
-        if (updates.withdrawHistory !== undefined) {
-            updatedUser.walletData.withdrawHistory = updates.withdrawHistory;
-        }
-        if (updates.beneficiary !== undefined) {
-            updatedUser.walletData.beneficiary = updates.beneficiary;
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        const users = getUsers();
+        const userIndex = users.findIndex(u => u.accountData.id === updatedUser.accountData.id);
+        if (userIndex !== -1) {
+            users[userIndex] = updatedUser;
+            saveUsers(users);
         }
 
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        
-        const users = getUsers();
-        const updatedUsers = users.map(u => 
-            u.accountData.id === updatedUser.accountData.id ? updatedUser : u
-        );
-        saveUsers(updatedUsers);
-        
-        setUser(updatedUser);
+        return updatedUser;
     };
 
     const value = {
