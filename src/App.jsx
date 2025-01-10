@@ -24,7 +24,7 @@ function AppContent() {
   const { user } = useAuth();
 
   return (
-    <div className="h-full w-full flex-1">
+    <div className="h-full w-full flex-1 bg-binance">
       <Routes>
         <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Landing />} />
         <Route
