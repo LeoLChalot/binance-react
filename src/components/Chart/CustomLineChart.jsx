@@ -29,6 +29,9 @@ export default function LineChart({ cryptoName, data }) {
     responsive: true,
     drawTicks: false,
     pointStyle: false,
+    onResize : function(chart, size) {
+      chart.options.scales.x.ticks.maxTicksLimit = Math.ceil(size.width / 100);
+    },
     elements: {
       line: {
         borderWidth: 1,
