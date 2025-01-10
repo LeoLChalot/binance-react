@@ -12,8 +12,9 @@ export default function Blog() {
 
     useEffect(() => {
         const storedComments = JSON.parse(localStorage.getItem('comments')) || {};
-        console.log(storedComments);
+        console.log(`Stored comments:`, storedComments);
         const commentsForCrypto = storedComments[selectedCrypto] || [];
+        console.log(`Comments for ${selectedCrypto}:`, commentsForCrypto);
         setComments(commentsForCrypto);
     }, [selectedCrypto]);
 
@@ -65,9 +66,7 @@ export default function Blog() {
                         )}
                     </div>
                     {comments.length > 0 && selectedCrypto != searchTerm ? (
-                        comments.map((comment, index) => (
-                            <Comments key={index} comment={comment} />
-                        ))
+                        <Comments key={selectedCrypto} cryptoId={selectedCrypto}/>
                     ) : (
                         <p className="text-gray-500">Aucun commentaire pour cette cryptomonnaie.</p>
                     )}
